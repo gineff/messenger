@@ -1,19 +1,23 @@
-"use strict"
 import Component from "../../utils/component";
-//kimport "button.css";
+import "./index.css";
 
 export default class Button extends Component {
-
   constructor(props) {
     super(props);
-    const {title, onclick} = props;
-    this.state = {title, onclick};
+    this.state = {
+      title: props?.title, 
+      onclick: props?.onclick,
+      variant: props?.variant,
+      className: props?.className,
+      href: props?.href,
+      type: props?.type
+    };
   }
 
   render() {
     return `
-    <button class="button button_red" onclick={{onclick}}>
+    <button type={{type}} href="{{href}}" class="button button_{{variant}} {{className}}" onclick="{{onclick}}">
       {{title}}
-    </button>`
+    </button>`;
   }
 } 

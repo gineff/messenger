@@ -1,34 +1,31 @@
 "use strict"
 import Component from "../../utils/component";
-import Button from "../button";
+import Header from "./components/header";
+import Body from "./components/body";
+import Footer from "./components/footer";
+import Group from "./components/group";
+import Label from "./components/label";
+import Control from "./components/control";
+import "./index.css";
 
 export default class Form extends Component {
-
   constructor(props) {
     super(props);
-    
-    //const {className} = props;
-    const submitHandler = ()=> {alert("submit")};
-
-    this.state = {Button, submitHandler};
+    this.state = {
+      children: props?.children,
+       "Form.Header": Header,
+       "Form.Body": Body,
+       "Form.Footer": Footer,
+       "Form.Group": Group,
+       "Form.Label": Label,
+       "Form.Control": Control
+    }
   }
 
-
   render() {
-    //const data = [1,2];
-
-    //const buttons = data.reduce((prev,cur)=> prev+`<Button text="but ${cur}" />`,'')
-
     return `
-    <div class="auth-form">
-      <div class="auth-form__header">Авторизация</div>
-      <div class="auth-form__body">
-        <div class="auth-form__input-group">
-        </div>
-      </div>
-      <div class="auth-form__footer">
-        <Button title="Submit" onclick="{{submitHandler}}" />
-      </div>
-    </div>`
+    <div class="form">
+      {{children}}
+    </div>`;
   }
 } 

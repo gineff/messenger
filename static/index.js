@@ -1,3 +1,3 @@
-import {route} from "./router";
+import route from "../src/utils/router";
 
 document.addEventListener("DOMContentLoaded", route);

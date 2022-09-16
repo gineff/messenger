@@ -3,7 +3,7 @@ import Component from "../../../../utils/component";
 export default class Footer extends Component {
   constructor(props) {
     super(props);
-    this.state = {children: props?.children};
+    this.state = { children: props?.children };
   }
 
   render() {
@@ -12,4 +12,4 @@ export default class Footer extends Component {
       {{children}}
     </div>`;
   }
-} 
+}

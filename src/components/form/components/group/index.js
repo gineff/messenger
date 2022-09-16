@@ -4,7 +4,7 @@ import "./index.css";
 export default class Group extends Component {
   constructor(props) {
     super(props);
-    this.state = {children: props?.children};
+    this.state = { children: props?.children };
   }
 
   render() {
@@ -13,4 +13,4 @@ export default class Group extends Component {
       {{children}}
     </div>`;
   }
-} 
+}

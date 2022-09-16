@@ -1,9 +1,9 @@
-.form__control{
+.form__control {
   font-size: 13px;
   line-height: 13px;
   margin: 8px 0;
   border: 0;
-    width: 100%;
+  width: 100%;
   color: #000;
 
   &:focus::placeholder {

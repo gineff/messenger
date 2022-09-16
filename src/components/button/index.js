@@ -5,12 +5,12 @@ export default class Button extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: props?.title, 
+      title: props?.title,
       onclick: props?.onclick,
       variant: props?.variant,
       className: props?.className,
       href: props?.href,
-      type: props?.type
+      type: props?.type,
     };
   }
 
@@ -20,4 +20,4 @@ export default class Button extends Component {
       {{title}}
     </button>`;
   }
-} 
+}

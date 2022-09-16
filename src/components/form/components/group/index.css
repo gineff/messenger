@@ -1,8 +1,8 @@
-.form__group{
+.form__group {
   width: 100%;
-  border-bottom: 1px solid #3369F3;
-  margin-bottom:16px;
-  
+  border-bottom: 1px solid #3369f3;
+  margin-bottom: 16px;
+
   &:after {
     font-size: 8px;
     line-height: 8px;

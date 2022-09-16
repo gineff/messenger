@@ -1,4 +1,3 @@
-"use strict"
 import Component from "../../utils/component";
 import Header from "./components/header";
 import Body from "./components/body";
@@ -13,13 +12,13 @@ export default class Form extends Component {
     super(props);
     this.state = {
       children: props?.children,
-       "Form.Header": Header,
-       "Form.Body": Body,
-       "Form.Footer": Footer,
-       "Form.Group": Group,
-       "Form.Label": Label,
-       "Form.Control": Control
-    }
+      "Form.Header": Header,
+      "Form.Body": Body,
+      "Form.Footer": Footer,
+      "Form.Group": Group,
+      "Form.Label": Label,
+      "Form.Control": Control,
+    };
   }
 
   render() {
@@ -28,4 +27,4 @@ export default class Form extends Component {
       {{children}}
     </div>`;
   }
-} 
+}

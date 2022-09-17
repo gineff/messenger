@@ -86,7 +86,6 @@ export default class Component {
         "gi"
       );
       const matches = template.matchAll(re);
-
       for (const match of matches) {
         const props = parsePropsFromString(match[1] || match[2]) ?? {};
 

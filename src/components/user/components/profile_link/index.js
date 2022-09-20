@@ -13,13 +13,12 @@ export default class ProfileLink extends Component {
       variant: "link",
       href: "/profile",
       className: "user_profile-link-button",
-      title: "Go to profile",
       clickHandler: goToElementHref,
     };
 
     return `
-    <div class="chat__profile-link">
-      <Button ${stringifyProps(buttonProps)}></Button>
+    <div class="user__profile-link">
+      <Button ${stringifyProps(buttonProps)}><span>Профиль  ></span></Button>
     </div>`;
   }
 }

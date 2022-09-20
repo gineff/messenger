@@ -3,12 +3,14 @@ import "./index.css";
 
 export default class List extends Component {
   render() {
-    const { children, data } = this.state;
-    console.log("data", data);
+    const { data } = this.state;
 
+    const items = data.map((el) => `<li>${el}</li>`).join("");
     return `
     <div class="chat__list">
-      ${children}
+      <ul>
+      ${items}
+      </ul>
     </div>`;
   }
 }

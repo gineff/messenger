@@ -9,22 +9,22 @@ import "./index.css";
 
 export default class Form extends Component {
   constructor(props) {
-    super(props);
-    this.state = {
-      children: props?.children,
+    super({
+      ...props,
       "Form.Header": Header,
       "Form.Body": Body,
       "Form.Footer": Footer,
       "Form.Group": Group,
       "Form.Label": Label,
       "Form.Control": Control,
-    };
+    });
   }
 
   render() {
+    const { children } = this.state;
     return `
     <div class="form">
-      {{children}}
+      ${children}
     </div>`;
   }
 }

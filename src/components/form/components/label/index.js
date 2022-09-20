@@ -2,15 +2,11 @@ import Component from "../../../../utils/component";
 import "./index.css";
 
 export default class Label extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { children: props?.children };
-  }
-
   render() {
+    const { children } = this.state;
     return `
-    <label class="form__label">
-      {{children}}
-    </label>`;
+    <div class="form__label">
+      ${children}
+    </div>`;
   }
 }

@@ -2,15 +2,11 @@ import Component from "../../../../utils/component";
 import "./index.css";
 
 export default class Group extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { children: props?.children };
-  }
-
   render() {
+    const { children } = this.state;
     return `
     <div class="form__group">
-      {{children}}
+      ${children}
     </div>`;
   }
 }

@@ -1,8 +1,12 @@
+import { wrapFunction, uid, stringifyProps } from "./index";
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-useless-escape */
-const propsRegexp = /(\w+)\s?=\s?(\d+|(?<quote>['"`])(.*?)\k<quote>)/gm;
+const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`]).*?\k<quote>|\d+|\{\{.*?\}\})/g;
+const quoteRegexp = /(?<quote>['"`])(.*?)\k<quote>/;
+const components = {};
 
-function getValue(obj, path, defaultValue) {
+function getValue(obj, path) {
   const keys = path.split(".");
   let result = obj;
 
@@ -11,20 +15,19 @@ function getValue(obj, path, defaultValue) {
     result = result[key];
 
     if (result === undefined) {
-      return defaultValue;
+      return undefined;
     }
   }
 
-  return result ?? defaultValue;
+  return result;
 }
-
+/*
 function uid() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
 }
-
+*/
 function parsePropsFromString(str) {
-  if (str === undefined) return undefined;
-
+  if (str === undefined || !str?.trim()) return undefined;
   const props = {};
   const matches = str.matchAll(propsRegexp);
 
@@ -32,10 +35,31 @@ function parsePropsFromString(str) {
   for (const match of matches) {
     props[match[1]] = (match[4] || match[2])?.trim();
   }
-
   return props;
 }
 
+function fillPropsFromState(messyProps, state) {
+  return Object.fromEntries(
+    Object.entries(messyProps).map(([key, template]) => {
+      const match = template.match(/\{\{(.*?)\}\}/);
+      if (match) {
+        const data = getValue(state, match[1].trim());
+        if (data !== undefined) {
+          return [[key], data];
+        }
+        console.error(`переменная ${key} не определена в state`);
+      }
+      return [[key], template.trim().replace(quoteRegexp, "$2")];
+    })
+  );
+}
+
+function getTagRegExp() {
+  //         1           2                3         4                5
+  // re = <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
+  return /<([A-Z][A-Za-z0-9._]*\b)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>/;
+}
+/*
 function stringifyProps(props, keys = false) {
   return Object.entries(props)
     .reduce((prev, [key, value]) => {
@@ -43,87 +67,87 @@ function stringifyProps(props, keys = false) {
         return prev;
       }
 
-      if (typeof value === "function") {
-        return `${prev}${key}="{{${key}}}" `;
+      if (typeof value === "function" || typeof value === "object") {
+        return `${prev}${key}={{${key}}}`;
       }
 
-      return `${prev}${key}="${value}"`;
+      return `${prev} ${key}="${value}"`;
     }, "")
     .trim();
+}
+*/
+function parseProps(str, state) {
+  const messyProps = str ? parsePropsFromString(str) : null;
+  console.log("messyProps", messyProps);
+  const props = messyProps ? fillPropsFromState(messyProps, state) : {};
+  console.log("props", props);
+
+  return props;
 }
 
 export { stringifyProps };
 
 export default class Component {
+  constructor(props) {
+    Object.entries(props).forEach(([key, value]) => {
+      if (value && Object.getPrototypeOf(value) === Component) {
+        this.setComponentByTagName(key, value);
+      } else {
+        this.setState(key, value);
+      }
+    });
+    this.compileTemplate();
+  }
+
   state = {};
 
-  get componentsKeys() {
-    return Object.entries(this.state).reduce((prev, [key, value]) => {
-      if (value && Object.getPrototypeOf(value) === Component) {
-        prev.push(key);
-      }
-      return prev;
-    }, []);
+  setState(key, value) {
+    this.state[key] = value;
   }
 
-  html() {
-    const template = this.compileTemplate();
-    const html = this.renderNestedComponents(template);
-
-    return html;
+  // eslint-disable-next-line class-methods-use-this
+  setComponentByTagName(tag, NestedComponent) {
+    components[tag] = NestedComponent;
   }
 
-  render() {
-    return "<div></div>";
+  // eslint-disable-next-line class-methods-use-this
+  getComponentByTagName(tag) {
+    return components[tag];
   }
 
-  renderNestedComponents(template) {
-    for (const key of this.componentsKeys) {
-      const singleTagComponentRegExp = `<${key}([^>]*)\/>`; // <Component props={{props}}/>
-      const pairedTagcomponentRegExp = `<${key}([^>]*)\>(.*?)<\/${key}>`; // <Component props={{props}}>{{children}}</Component>
-      const re = new RegExp(
-        `${singleTagComponentRegExp}|${pairedTagcomponentRegExp}`,
-        "gi"
-      );
-      const matches = template.matchAll(re);
-      for (const match of matches) {
-        const props = parsePropsFromString(match[1] || match[2]) ?? {};
+  replaceNestedComponents(template) {
+    const re = getTagRegExp();
+    let match;
+    const nestedComponents = {};
 
-        if (match[3]) {
-          [, , , props.children] = match;
-        }
+    // eslint-disable-next-line no-cond-assign
+    while ((match = template.match(re))) {
+      const id = uid();
+      const [rematch, singleTag, singleTagProps, pairedTag, pairedTagProps, children] = match;
 
-        const NestedComponent = this.state[key];
-        const html = new NestedComponent(props).html();
-        // eslint-disable-next-line no-param-reassign
-        template = template.replace(match[0], html);
-      }
+      template = template.replace(rematch, `<embed id="${id}">`);
+
+      const props = parseProps(singleTagProps || pairedTagProps, this.state);
+      const NestedComponent = this.getComponentByTagName(singleTag || pairedTag);
+      const nestedComponent = new NestedComponent({ ...props, children: children?.trim() });
+      nestedComponents[id] = nestedComponent;
     }
 
-    return template;
+    return [template, nestedComponents];
   }
 
   compileTemplate() {
-    let template = this.render()
+    const template = this.render()
       .trim()
       .replaceAll(/[\n\r]/g, "");
-    const matches = template.matchAll(/\{\{(.*?)\}\}/gi);
+    const [embededTemplate, nestedComponents] = this.replaceNestedComponents(template);
 
-    for (const match of matches) {
-      const data = getValue(this.state, match[1]?.trim());
-      let replacer = data;
+    this.element = document.createElement("div");
+    this.element.innerHTML = embededTemplate;
 
-      if (typeof data === "function") {
-        const fid = `func${uid()}`;
-        window[fid] = function eventHandler(element) {
-          data(element);
-        };
-        replacer = `${fid}(this)`;
-      }
-
-      template = template.replace(new RegExp(match[0], "gi"), replacer);
-    }
-
-    return template;
+    Object.entries(nestedComponents).forEach(([key, value]) => {
+      const embeded = this.element.querySelector(`embed[id="${key}"]`);
+      embeded.parentNode.replaceChild(value.element.firstElementChild, embeded);
+    });
   }
 }

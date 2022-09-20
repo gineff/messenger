@@ -9,14 +9,15 @@ const routes = {
   chat: Chat,
   404: Er404,
 };
+
 function render(Component) {
   const component = new Component();
-  const html = component.html();
   const root = document.getElementById("root");
-  root.innerHTML = html;
+  root.innerHTML = "";
+  root.appendChild(component.element.firstElementChild);
 }
+
 export default function route() {
   const path = document.location.pathname.slice(1);
-
   render(routes[path] ?? routes[404]);
 }

@@ -1,15 +1,11 @@
 import Component from "../../../../utils/component";
 
 export default class Footer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { children: props?.children };
-  }
-
   render() {
+    const { children } = this.state;
     return `
     <div class="form__footer">
-      {{children}}
+      ${children}
     </div>`;
   }
 }

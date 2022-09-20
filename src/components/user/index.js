@@ -1,16 +1,16 @@
 import Component from "../../utils/component";
+import ProfileLink from "./components/profile_link";
 import "./index.css";
 
-export default class User extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { children: props?.children };
-  }
+export { ProfileLink };
 
+export default class User extends Component {
   render() {
+    const { children } = this.state;
+
     return `
-    <div class="form__body">
-      {{children}}
+    <div class="user">
+      ${children}
     </div>`;
   }
 }

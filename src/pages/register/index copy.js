@@ -5,7 +5,8 @@ import Form from "../../components/form";
 import Button from "../../components/button";
 import "./index.css";
 
-const emailRegExp = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+const emailRegExp =
+  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const loginRegExp = /^[a-zA-Z0-9.$_]{4,256}$/;
 const textRegExp = /^[a-zA-Zа-яА-Я.$_]{4,256}$/;
 const phoneRegExp = /^(\+\d|8)[ ()\d-]{10,16}$/;
@@ -14,41 +15,55 @@ function valiateFormInput(element) {
   const group = element.parentNode;
   const requireIsValid = element.required ? !!element.value : true;
 
-  group.classList[requireIsValid ? "remove" : "add"]("form__group_invalid-require");
+  group.classList[requireIsValid ? "remove" : "add"](
+    "form__group_invalid-require"
+  );
   if (!requireIsValid) return false;
 
   switch (element.type) {
     case "email": {
       const emailIsValid = emailRegExp.test(element.value);
 
-      group.classList[emailIsValid ? "remove" : "add"]("form__group_invalid-email");
+      group.classList[emailIsValid ? "remove" : "add"](
+        "form__group_invalid-email"
+      );
       return emailIsValid;
     }
     case "text": {
       if (element.id === "login") {
         const loginIsValid = loginRegExp.test(element.value);
 
-        group.classList[loginIsValid ? "remove" : "add"]("form__group_invalid-login");
+        group.classList[loginIsValid ? "remove" : "add"](
+          "form__group_invalid-login"
+        );
         return loginIsValid;
       }
 
       const textIsValid = textRegExp.test(element.value);
 
-      group.classList[!requireIsValid || textIsValid ? "remove" : "add"]("form__group_invalid-text");
+      group.classList[!requireIsValid || textIsValid ? "remove" : "add"](
+        "form__group_invalid-text"
+      );
       return textIsValid;
     }
     case "tel": {
       const phoneStrIsValid = phoneRegExp.test(element.value);
-      const phoneNumberlength = element.value && element.value.match(/\d/g).length;
+      const phoneNumberlength =
+        element.value && element.value.match(/\d/g).length;
 
-      group.classList[phoneStrIsValid && phoneNumberlength === 11 ? "remove" : "add"]("form__group_invalid-phone");
+      group.classList[
+        phoneStrIsValid && phoneNumberlength === 11 ? "remove" : "add"
+      ]("form__group_invalid-phone");
       return phoneStrIsValid && phoneNumberlength === 11;
     }
     case "password": {
       if (element.id === "password2") {
-        const passIsValid = element.value === document.getElementById("password").value;
+        const passIsValid =
+          element.value === document.getElementById("password").value;
 
-        group.classList[!requireIsValid || passIsValid ? "remove" : "add"]("form__group_invalid-password");
+        group.classList[!requireIsValid || passIsValid ? "remove" : "add"](
+          "form__group_invalid-password"
+        );
         return passIsValid;
       }
       break;
@@ -80,7 +95,8 @@ function onblur(element) {
 
 export default class Login extends Component {
   constructor(props) {
-    super({ ...props, Wrapper, Form, Button });
+    super(props);
+    this.state = { Wrapper, Form, Button, goToElementHref, onSubmit, onblur };
   }
 
   render() {
@@ -121,7 +137,7 @@ export default class Login extends Component {
     const inputsView = inputs.reduce(
       (prev, { label, ...rest }) => `${prev}<Form.Group>
         <Form.Label>${label}</Form.Label>
-        <Form.Control ${stringifyProps({ ...rest, onblur, required: "true" })} />
+        <Form.Control ${stringifyProps({ ...rest, onblur, required: true })} />
       </Form.Group>`,
       ""
     );
@@ -131,17 +147,20 @@ export default class Login extends Component {
         href: "/chat",
         className: "login-form__apply-button",
         title: "Зарегистрироваться",
-        clickHandler: onSubmit,
+        onclick: "{{onSubmit}}",
       },
       {
         variant: "link",
         href: "/login",
         className: "login-form__alternative-button",
         title: "Войти",
-        clickHandler: goToElementHref,
+        onclick: "{{goToElementHref}}",
       },
     ];
-    const buttons = ninjaData.reduce((prev, props) => `${prev}<Button ${stringifyProps(props)}/>`, "");
+    const buttons = ninjaData.reduce(
+      (prev, props) => `${prev}<Button ${stringifyProps(props)}/>`,
+      ""
+    );
 
     return `
     <Wrapper  className="login-form" >

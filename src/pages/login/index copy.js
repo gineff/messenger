@@ -1,5 +1,5 @@
-import Component from "../../utils/component";
-import { goToElementHref, stringifyProps } from "../../utils";
+import Component, { stringifyProps } from "../../utils/component";
+import goToElementHref from "../../utils/goToElementHref";
 import Wrapper from "../../components/wrapper";
 import Form from "../../components/form";
 import Button from "../../components/button";
@@ -7,7 +7,7 @@ import "./index.css";
 
 export default class Login extends Component {
   constructor(props) {
-    super({ ...props, Wrapper, Form, Button });
+    super({ ...props, Wrapper, Form, Button, goToElementHref });
   }
 
   render() {
@@ -16,25 +16,26 @@ export default class Login extends Component {
         id: "login",
         type: "text",
         placeholder: "ivanivanov",
+        value: "",
         label: "Логин",
       },
       {
         id: "password",
         type: "password",
         placeholder: "••••••••••••",
+        value: "",
         label: "Пароль",
       },
     ];
 
     const inputsView = inputs.reduce(
-      (prev, { id, type, placeholder, label }) =>
+      (prev, { id, type, placeholder, value, label }) =>
         `${prev}<Form.Group>
         <Form.Label>${label}</Form.Label>
-        <Form.Control id="${id}" type="${type}" placeholder="${placeholder}"  />
+        <Form.Control id="${id}" type="${type}" placeholder="${placeholder}" value="${value}" />
       </Form.Group>`,
       ""
     );
-
 
     const ninjaData = [
       {
@@ -42,33 +43,32 @@ export default class Login extends Component {
         href: "/chat",
         className: "login-form__apply-button",
         title: "Авторизоваться",
-        clickHandler: goToElementHref,
+        onclick: "{{goToElementHref}}",
       },
       {
         variant: "link",
         href: "/register",
         className: "login-form__alternative-button",
         title: "Нет аккаунта?",
-        clickHandler: goToElementHref,
+        onclick: "{{goToElementHref}}",
       },
     ];
 
     const buttons = ninjaData.reduce((prev, props) => `${prev}<Button ${stringifyProps(props)}/>`, "");
 
     return `
-      <Wrapper className = "login-form">
+    <Wrapper  className="login-form" >
         <Form>
           <Form.Header>
             Вход
-          </Form.Header>
+          </Form.Header>  
           <Form.Body>
             ${inputsView}
           </Form.Body>
           <Form.Footer>
             ${buttons}
-          </Form.Footer> 
+          </Form.Footer>
         </Form>
-      </Wrapper>
-    `;
+      </Wrapper>`;
   }
 }

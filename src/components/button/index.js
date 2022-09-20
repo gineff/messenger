@@ -1,4 +1,5 @@
 import Component from "../../utils/component";
+import { wrapFunction } from "../../utils";
 import "./index.css";
 
 export default class Button extends Component {
@@ -6,7 +7,7 @@ export default class Button extends Component {
     const { type, href, variant, className, title, clickHandler } = this.state;
 
     return `
-    <button type="${type}" href="${href}" class="button button_${variant} ${className}" onclick=${clickHandler}>
+    <button type="${type}" href="${href}" class="button button_${variant} ${className}" onclick="${wrapFunction(clickHandler)}">
       ${title}
     </button>`;
   }

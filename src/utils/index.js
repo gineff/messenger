@@ -3,6 +3,12 @@ const goToElementHref = (element) => {
   if (href !== undefined) window.location = href;
 };
 
+// eslint-disable-next-line no-underscore-dangle
+const _context = [];
+
+const setContext = (el) => _context.push(el) - 1;
+const getContext = (i) => _context[i];
+
 const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
 
 const wrapFunction = (f) => {
@@ -22,12 +28,11 @@ const stringifyProps = (props, keys = false) =>
       if (typeof value === "string") {
         return `${prev} ${key}="${value}"`;
       }
-      if (typeof value === "function") {
-        return `${prev} ${key}="${wrapFunction(value)}"`;
-      }
 
-      return `${prev} ${key}={{${key}}}`;
+      return `${prev} ${key}={{${setContext(value)}}}`;
     }, "")
     .trim();
 
-export { wrapFunction, uid, goToElementHref, stringifyProps };
+const useContext = [getContext, setContext];
+
+export { wrapFunction, uid, goToElementHref, stringifyProps, useContext };

@@ -1,31 +1,12 @@
-import { wrapFunction, uid, stringifyProps } from "./index";
+import { useContext, uid, stringifyProps } from "./index";
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-useless-escape */
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`]).*?\k<quote>|\d+|\{\{.*?\}\})/g;
 const quoteRegexp = /(?<quote>['"`])(.*?)\k<quote>/;
 const components = {};
+const [getContext] = useContext;
 
-function getValue(obj, path) {
-  const keys = path.split(".");
-  let result = obj;
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const key of keys) {
-    result = result[key];
-
-    if (result === undefined) {
-      return undefined;
-    }
-  }
-
-  return result;
-}
-/*
-function uid() {
-  return Math.random().toString(16).slice(2) + Date.now().toString(16);
-}
-*/
 function parsePropsFromString(str) {
   if (str === undefined || !str?.trim()) return undefined;
   const props = {};
@@ -38,16 +19,16 @@ function parsePropsFromString(str) {
   return props;
 }
 
-function fillPropsFromState(messyProps, state) {
+function fillPropsFromState(messyProps) {
   return Object.fromEntries(
     Object.entries(messyProps).map(([key, template]) => {
       const match = template.match(/\{\{(.*?)\}\}/);
       if (match) {
-        const data = getValue(state, match[1].trim());
+        const data = getContext(match[1].trim());
         if (data !== undefined) {
           return [[key], data];
         }
-        console.error(`переменная ${key} не определена в state`);
+        console.error(`переменная ${key} не определена в context`);
       }
       return [[key], template.trim().replace(quoteRegexp, "$2")];
     })
@@ -59,28 +40,12 @@ function getTagRegExp() {
   // re = <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
   return /<([A-Z][A-Za-z0-9._]*\b)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>/;
 }
-/*
-function stringifyProps(props, keys = false) {
-  return Object.entries(props)
-    .reduce((prev, [key, value]) => {
-      if ((keys && !keys.include(key)) || value === undefined) {
-        return prev;
-      }
 
-      if (typeof value === "function" || typeof value === "object") {
-        return `${prev}${key}={{${key}}}`;
-      }
-
-      return `${prev} ${key}="${value}"`;
-    }, "")
-    .trim();
-}
-*/
-function parseProps(str, state) {
+function parseProps(str) {
   const messyProps = str ? parsePropsFromString(str) : null;
-  console.log("messyProps", messyProps);
-  const props = messyProps ? fillPropsFromState(messyProps, state) : {};
-  console.log("props", props);
+  // console.log("messyProps", messyProps);
+  const props = messyProps ? fillPropsFromState(messyProps) : {};
+  // console.log("props", props);
 
   return props;
 }
@@ -127,7 +92,7 @@ export default class Component {
 
       template = template.replace(rematch, `<embed id="${id}">`);
 
-      const props = parseProps(singleTagProps || pairedTagProps, this.state);
+      const props = parseProps(singleTagProps || pairedTagProps);
       const NestedComponent = this.getComponentByTagName(singleTag || pairedTag);
       const nestedComponent = new NestedComponent({ ...props, children: children?.trim() });
       nestedComponents[id] = nestedComponent;

@@ -1,4 +1,5 @@
 import Component from "../../utils/component";
+import { useContext } from "../../utils";
 import Wrapper from "../../components/wrapper";
 import Sidebar, { Header, Body } from "../../components/sidebar";
 import Main from "../../components/main";
@@ -24,10 +25,11 @@ export default class ChatPage extends Component {
 
   render() {
 
-    //const data = [1,3,4];
-   
+    const [,setContext] = useContext;
+    const data = [1,2,3];
+
     return `
-    <Wrapper className="chat-view" data={{data}}>
+    <Wrapper className="chat-view">
       <Sidebar>
         <Sidebar.Header>
           <User.ProfileLink />
@@ -35,7 +37,7 @@ export default class ChatPage extends Component {
           <p>sidebar</p>
         </Sidebar.Header>
         <Sidebar.Body>
-          <Chat.List />
+          <Chat.List data={{${setContext(data)}}}/>
         </Sidebar.Body>
       </Sidebar>
       <Main >

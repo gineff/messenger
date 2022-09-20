@@ -1,5 +1,5 @@
 import Component from "../../utils/component";
-import { goToElementHref, stringifyProps } from "../../utils";
+import { goToElementHref, stringifyProps, useContext } from "../../utils";
 import Wrapper from "../../components/wrapper";
 import Form from "../../components/form";
 import Button from "../../components/button";
@@ -11,6 +11,10 @@ export default class Login extends Component {
   }
 
   render() {
+    const [, setContext] = useContext;
+
+    console.log("Login");
+    const data = [1, 2, 3];
     const inputs = [
       {
         id: "login",
@@ -26,6 +30,8 @@ export default class Login extends Component {
       },
     ];
 
+    
+
     const inputsView = inputs.reduce(
       (prev, { id, type, placeholder, label }) =>
         `${prev}<Form.Group>
@@ -34,7 +40,6 @@ export default class Login extends Component {
       </Form.Group>`,
       ""
     );
-
 
     const ninjaData = [
       {

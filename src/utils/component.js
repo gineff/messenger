@@ -142,12 +142,14 @@ export default class Component {
       .replaceAll(/[\n\r]/g, "");
     const [embededTemplate, nestedComponents] = this.replaceNestedComponents(template);
 
-    this.element = document.createElement("div");
-    this.element.innerHTML = embededTemplate;
+    const temp = document.createElement("template");
+    temp.innerHTML = embededTemplate;
 
     Object.entries(nestedComponents).forEach(([key, value]) => {
-      const embeded = this.element.querySelector(`embed[id="${key}"]`);
-      embeded.parentNode.replaceChild(value.element.firstElementChild, embeded);
+      const embeded = temp.content.querySelector(`embed[id="${key}"]`);
+      embeded.replaceWith(value.element);
     });
+
+    this.element = temp.content;
   }
 }

@@ -7,6 +7,7 @@ import Label from "./components/label";
 import Control from "./components/control";
 import "./index.css";
 
+
 export default class Form extends Component {
   constructor(props) {
     super({

@@ -4,8 +4,8 @@ import "./index.css";
 
 export default class Control extends Component {
   render() {
-    const { onblur, ...restProps } = this.state;
+    const { onblur, className, ...restProps } = this.state;
 
-    return `<input class="form__control" ${stringifyProps(restProps)} onblur="${wrapFunction(onblur)}"/>`;
+    return `<input class="form__control ${className}" ${stringifyProps(restProps)} onblur="${wrapFunction(onblur)}"/>`;
   }
 }

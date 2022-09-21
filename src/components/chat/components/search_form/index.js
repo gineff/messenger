@@ -1,22 +1,20 @@
 import Component from "../../../../utils/component";
-import Button from "../../../button";
-import { wrapFunction, stringifyProps } from "../../../../utils";
+import Control from "../../../form/components/control";
+import {  stringifyProps } from "../../../../utils";
 import "./index.css";
 
 export default class SearchForm extends Component {
+  constructor(props) {
+    super({...props, "Form.Control": Control});
+  }
+
   render() {
     const { onSearchSubmit } = this.state;
 
-    const buttonProps = {
-      variant: "link",
-      href: "/profile",
-      className: "user_profile-link-button",
-      clickHandler: goToElementHref,
-    };
 
     return `
     <div class="chat__search-form">
-       <Button ${stringifyProps(buttonProps)}><span>Профиль  ></span></Button>
+       <Form.Control className="chat__search-form-control" placeholder="Поиск" />
     </div>`;
   }
 }

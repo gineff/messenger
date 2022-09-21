@@ -18,7 +18,7 @@ export default class ProfileLink extends Component {
 
     return `
     <div class="user__profile-link">
-      <Button ${stringifyProps(buttonProps)}><span>Профиль  ></span></Button>
+      <Button ${stringifyProps(buttonProps)}>Профиль  ></Button>
     </div>`;
   }
 }

@@ -7,6 +7,24 @@ const quoteRegexp = /(?<quote>['"`])(.*?)\k<quote>/;
 const components = {};
 const [getContext] = useContext;
 
+function getValue(path, obj) {
+  console.log(path, obj);
+  const keys = path.split(".");
+  let result = obj;
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key of keys) {
+    const match = key.match(/^(\w+)\[(\d+)\]$/);
+    if (match) {
+      console.log(888888, result, match);
+      result = result[match[1]][match[2]];
+    } else {
+      result = result[key];
+    }
+  }
+  return result;
+}
+
 function parsePropsFromString(str) {
   if (str === undefined || !str?.trim()) return undefined;
   const props = {};
@@ -24,7 +42,7 @@ function fillPropsFromState(messyProps, state) {
     Object.entries(messyProps).map(([key, template]) => {
       const match = template.match(/\{\{(.*?)\}\}/);
       if (match) {
-        const data = state[match[1]] || getContext(match[1].trim());
+        const data = parseFloat(match[1]) ? getContext(match[1].trim()) : getValue(match[1], state);
         if (data !== undefined) {
           return [[key], data];
         }
@@ -49,8 +67,6 @@ function parseProps(str, state) {
 
   return props;
 }
-
-export { stringifyProps };
 
 export default class Component {
   constructor(props) {
@@ -94,6 +110,7 @@ export default class Component {
 
       const props = parseProps(singleTagProps || pairedTagProps, this.state);
       const NestedComponent = this.getComponentByTagName(singleTag || pairedTag);
+      console.log(singleTag || pairedTag, NestedComponent);
       const nestedComponent = new NestedComponent({ ...props, children: children?.trim() });
       nestedComponents[id] = nestedComponent;
     }

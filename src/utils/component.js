@@ -16,7 +16,7 @@ function getValue(path, obj) {
   for (const key of keys) {
     const match = key.match(/^(\w+)\[(\d+)\]$/);
     if (match) {
-      console.log(888888, result, match);
+      console.log(result, key, match);
       result = result[match[1]][match[2]];
     } else {
       result = result[key];
@@ -42,7 +42,7 @@ function fillPropsFromState(messyProps, state) {
     Object.entries(messyProps).map(([key, template]) => {
       const match = template.match(/\{\{(.*?)\}\}/);
       if (match) {
-        const data = parseFloat(match[1]) ? getContext(match[1].trim()) : getValue(match[1], state);
+        const data = parseFloat(match[1]) ? getContext(match[1]) : getValue(match[1], state);
         if (data !== undefined) {
           return [[key], data];
         }
@@ -110,7 +110,6 @@ export default class Component {
 
       const props = parseProps(singleTagProps || pairedTagProps, this.state);
       const NestedComponent = this.getComponentByTagName(singleTag || pairedTag);
-      console.log(singleTag || pairedTag, NestedComponent);
       const nestedComponent = new NestedComponent({ ...props, children: children?.trim() });
       nestedComponents[id] = nestedComponent;
     }

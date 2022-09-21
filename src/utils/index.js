@@ -4,7 +4,7 @@ const goToElementHref = (element) => {
 };
 
 // eslint-disable-next-line no-underscore-dangle
-const _context = [];
+const _context = ["0"];
 
 const setContext = (el) => _context.push(el) - 1;
 const getContext = (i) => _context[i];

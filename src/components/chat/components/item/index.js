@@ -10,7 +10,8 @@ export default class Item extends Component {
 
   render() {
     const { chat } = this.state;
-    
+
+    console.log(this.state);
     const {
       title,
       unread_count,

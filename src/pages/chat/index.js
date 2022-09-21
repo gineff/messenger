@@ -24,13 +24,12 @@ export default class ChatPage extends Component {
   }
 
   render() {
+    const [, setContext] = useContext;
+    const chats = [1, 2, 3];
 
-    const [,setContext] = useContext;
-    const chats = [1,2,3];
-
-    const onSearchSubmit = (element)=> {
+    const onSearchSubmit = (element) => {
       console.log("element", element);
-    }
+    };
 
     return `
     <Wrapper className="chat-view">
@@ -40,7 +39,7 @@ export default class ChatPage extends Component {
           <Chat.SearchForm onSearchSubmit={{${setContext(onSearchSubmit)}}} />
         </Sidebar.Header>
         <Sidebar.Body>
-          <Chat.List data={{${setContext(chats)}}}/>
+          <Chat.List chats={{${setContext(chats)}}}/>
         </Sidebar.Body>
       </Sidebar>
       <Main >

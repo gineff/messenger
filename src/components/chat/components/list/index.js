@@ -8,15 +8,14 @@ export default class List extends Component {
   }
 
   render() {
-    // const { chats } = this.state;
+    const { chats } = this.state;
 
-    // const items = chats.map((el, i) => `<Chat.Item chats = {{chats[${i}]}}></Chat.Item>`).join("");
+    const items = chats.map((el, i) => `<Chat.Item chat = {{chats[${i}]}}></Chat.Item>`).join("");
 
     return `
     <div class="chat__list">
       <ul>
-      <Chat.Item chat = {{chats[1]}}></Chat.Item>
-      
+      ${items}      
       </ul>
     </div>`;
   }

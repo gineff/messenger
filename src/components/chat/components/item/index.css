@@ -1,4 +1,24 @@
-.chat__item{
+.chat__item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.chat-item {
+  &_title {
+    width: 100%;
+  }
+  &__avatar {
+    flex: none;
+  }
+
+  &__middle-block {
+    flex: 1;
+  }
+
+  &nest __last-message-detials {
+    width: 23px;
+    overflow: hidden;
+    flex: none;
+  }
 }

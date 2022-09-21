@@ -5,6 +5,7 @@ import Sidebar, { Header, Body } from "../../components/sidebar";
 import Main from "../../components/main";
 import { SearchForm, List, Messages } from "../../components/chat";
 import { ProfileLink } from "../../components/user";
+import chats from "../../../static/json/chats.json";
 import "./index.css";
 
 export default class ChatPage extends Component {
@@ -25,7 +26,7 @@ export default class ChatPage extends Component {
 
   render() {
     const [, setContext] = useContext;
-    const chats = [1, 2, 3];
+    // const chats = [1, 2, 3];
 
     const onSearchSubmit = (element) => {
       console.log("element", element);

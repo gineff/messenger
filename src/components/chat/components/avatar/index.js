@@ -7,7 +7,7 @@ export default class Avatar extends Component {
 
     return `
     <div class="chat__avatar ${className}">
-      <image src="${image}">
+      
     </div>`;
   }
 }

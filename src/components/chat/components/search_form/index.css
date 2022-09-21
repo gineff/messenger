@@ -1,15 +1,14 @@
 .chat__search-form-control {
-  background-color: #EFEFEF;   
-  color: #999; 
+  background-color: #efefef;
+  color: #999;
   border-radius: 8px;
-  line-height: 24px;
-  font-size: 24px;
+  height: 24px;
+  font-size: 12px;
   text-align: center;
-
 
   &::placeholder {
     background: url(/static/images/magnifying-glass-solid.svg) no-repeat;
-    background-position: 20%;
+    background-position: 35%;
   }
 
   &:focus::placeholder {
@@ -18,9 +17,6 @@
   }
 }
 
-.chat__search-form{
-  padding: 10px
+.chat__search-form {
+  padding: 10px;
 }
-
-
-

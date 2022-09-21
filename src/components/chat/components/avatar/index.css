@@ -1,0 +1,10 @@
+.chat__avatar {
+  border-radius: 50%;
+  height: 47px;
+  width: 47px;
+  background-color: #efefef;
+  & > image {
+    height: 47px;
+    width: 47px;
+  }
+}

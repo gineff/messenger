@@ -19,12 +19,12 @@ function parsePropsFromString(str) {
   return props;
 }
 
-function fillPropsFromState(messyProps) {
+function fillPropsFromState(messyProps, state) {
   return Object.fromEntries(
     Object.entries(messyProps).map(([key, template]) => {
       const match = template.match(/\{\{(.*?)\}\}/);
       if (match) {
-        const data = getContext(match[1].trim());
+        const data = state[match[1]] || getContext(match[1].trim());
         if (data !== undefined) {
           return [[key], data];
         }
@@ -41,10 +41,10 @@ function getTagRegExp() {
   return /<([A-Z][A-Za-z0-9._]*\b)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>/;
 }
 
-function parseProps(str) {
+function parseProps(str, state) {
   const messyProps = str ? parsePropsFromString(str) : null;
   // console.log("messyProps", messyProps);
-  const props = messyProps ? fillPropsFromState(messyProps) : {};
+  const props = messyProps ? fillPropsFromState(messyProps, state) : {};
   // console.log("props", props);
 
   return props;
@@ -92,7 +92,7 @@ export default class Component {
 
       template = template.replace(rematch, `<embed id="${id}">`);
 
-      const props = parseProps(singleTagProps || pairedTagProps);
+      const props = parseProps(singleTagProps || pairedTagProps, this.state);
       const NestedComponent = this.getComponentByTagName(singleTag || pairedTag);
       const nestedComponent = new NestedComponent({ ...props, children: children?.trim() });
       nestedComponents[id] = nestedComponent;

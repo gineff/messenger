@@ -1,5 +1,5 @@
 import Component from "../../utils/component";
-import { useContext } from "../../utils";
+import { useContext, useEventBus } from "../../utils";
 import Wrapper from "../../components/wrapper";
 import Sidebar, { Header, Body } from "../../components/sidebar";
 import Main from "../../components/main";
@@ -26,25 +26,30 @@ export default class ChatPage extends Component {
 
   render() {
     const [, setContext] = useContext;
-    // const chats = [1, 2, 3];
+    const [on, emit] = useEventBus;
 
-    const onSearchSubmit = (element) => {
-      console.log("element", element);
-    };
+
+    on("onSearchSubmit", (chatName)=> {console.log(chatName)})
+
+    on("chatChange", (id) => {
+      const messages = [1, 2, 3];
+      emit("messagesUpdate", messages);
+    });
+
 
     return `
     <Wrapper className="chat-view">
       <Sidebar>
         <Sidebar.Header>
           <User.ProfileLink />
-          <Chat.SearchForm onSearchSubmit={{${setContext(onSearchSubmit)}}} />
+          <Chat.SearchForm />
         </Sidebar.Header>
         <Sidebar.Body>
           <Chat.List chats={{${setContext(chats)}}}/>
         </Sidebar.Body>
       </Sidebar>
       <Main >
-      <Chat.Messages />
+        <Chat.Messages />
       </Main> 
     </Wrapper>`;
   }

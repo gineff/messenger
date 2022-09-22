@@ -8,7 +8,6 @@ const components = {};
 const [getContext] = useContext;
 
 function getValue(path, obj) {
-  console.log(path, obj);
   const keys = path.split(".");
   let result = obj;
 
@@ -16,7 +15,6 @@ function getValue(path, obj) {
   for (const key of keys) {
     const match = key.match(/^(\w+)\[(\d+)\]$/);
     if (match) {
-      console.log(result, key, match);
       result = result[match[1]][match[2]];
     } else {
       result = result[key];

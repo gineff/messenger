@@ -35,4 +35,25 @@ const stringifyProps = (props, keys = false) =>
 
 const useContext = [getContext, setContext];
 
-export { wrapFunction, uid, goToElementHref, stringifyProps, useContext };
+const eventMap = new Map();
+
+const on = (key, cb) => {
+  let handlers = eventMap.get(key);
+  if (!handlers) {
+    handlers = [];
+  }
+  handlers.push(cb);
+  this.eventMap.set(key, handlers);
+};
+
+const emit = (key, payload) => {
+  const handlers = eventMap.get(key);
+  if (!Array.isArray(handlers)) return;
+  handlers.forEach((handler) => {
+    handler(payload);
+  });
+};
+
+const useEventBus = [on, emit];
+
+export { wrapFunction, uid, goToElementHref, stringifyProps, useContext, useEventBus };

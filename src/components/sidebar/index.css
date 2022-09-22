@@ -2,6 +2,6 @@
   width: 310px;
   height: 100%;
   overflow: hidden;
-  padding: 0 10px;
-  background-color: brown;
+  border-right: 1px solid #eaeaea;
+  background-color: #fbfbfb;
 }

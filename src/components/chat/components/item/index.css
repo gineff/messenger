@@ -2,17 +2,29 @@
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  padding: 12px 0;
+  padding: 6px 10px;
+  margin: 4px;
+  border-top: 1px solid #eaeaea;
 }
 
 .chat-item {
-  &__avatar {
-    flex: none;
+  &.active {
+    background-color: #e4edfd;
   }
 
-  &__middle-block {
-    flex: 1;
-    padding: 0 10px;
+  &__avatar {
+    flex: none;
+    margin: 8px 0;
+    margin-right: 4px;
+  }
+
+  &__last-message-detials {
+    width: 100%;
+    & > div {
+      width: 100%;
+      display: inline-flex;
+      margin-bottom: 4px;
+    }
   }
 
   &__title {
@@ -22,16 +34,17 @@
     color: #1e1e1e;
   }
 
+  &__last-message-time {
+    font-size: 9px;
+    line-height: 13px;
+    margin-left: auto;
+    padding-right: 4px;
+  }
+
   &__last-message-content {
     font-size: 12px;
     line-height: 15px;
     color: #999;
-    padding: 4px 0;
-  }
-
-  &__last-message-time {
-    font-size: 9px;
-    line-height: 13px;
   }
 
   &__last-message-detials-unread-count {
@@ -45,12 +58,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    margin-left: auto;
   }
-
-  &__last-message-detials {
-    width: 23px;
-    overflow: hidden;
-    flex: none;
-  }
-
 }

@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import Component from "../../../../utils/component";
+import { wrapFunction } from "../../../../utils";
 import Avatar from "../avatar";
 import "./index.css";
 
@@ -18,9 +19,10 @@ export default class Item extends Component {
   }
 
   render() {
-    const { chat } = this.state;
+    const { chat, className, triggerChatSelect } = this.state;
 
     const {
+      id,
       title,
       unread_count,
       avatar,
@@ -42,17 +44,22 @@ export default class Item extends Component {
       return getFormatedDate(date);
     };
 
+    const handleSelectChatItem = () => {
+      triggerChatSelect(id)
+    };
+
     return `
-    <div class="chat__item chat-item">
+    <div data-id = "${id}" class="${className} chat-item" onclick={{${wrapFunction(handleSelectChatItem)}}}>
       <Chat.Avatar className="chat-item__avatar" image={{avatar}} />
-      <div class="chat-item__middle-block">
-        <div class="chat-item__title">${title}</div>
-        <div class="chat-item__last-message-content">${content}</div>
-      </div>
       <div class="chat-item__last-message-detials">
-        <div class="chat-item__last-message-time">${formattedTime()}</div>
-        <div class="chat-item__last-message-detials-unread-count">${unread_count}</time>
-      </div>
+        <div>
+          <div class="chat-item__title">${title}</div>
+          <div class="chat-item__last-message-time">${formattedTime()}</div>
+        </div>
+        <div>
+          <div class="chat-item__last-message-content">${content}</div>
+          <div class="chat-item__last-message-detials-unread-count">${unread_count}</div>
+        </div>
     </div>`;
   }
 }

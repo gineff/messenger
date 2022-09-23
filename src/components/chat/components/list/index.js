@@ -24,17 +24,14 @@ export default class List extends Component {
     });
   }
 
-
   
   render() {
     const { chats, chat } = this.state;
     const { id } = chat ?? {};
     const items = chats.map((chat) => new Item({ chat, active: chat.id === id, className: "chat__item " }));
 
-    const handleClick = ()=> {}
-    
     return `
-    <div class="chat__list" onClick={{${setContext(handleClick)}}}>
+    <div class="chat__list">
       {{${setContext(items)}}}      
     </div>`;
   }

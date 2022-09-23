@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 import Component from "../../../../utils/component";
-import { wrapFunction } from "../../../../utils";
 import Avatar from "../avatar";
 import "./index.css";
 
@@ -19,7 +18,7 @@ export default class Item extends Component {
   }
 
   render() {
-    const { chat, className, triggerChatSelect } = this.state;
+    const { chat, className } = this.state;
 
     const {
       id,
@@ -44,12 +43,9 @@ export default class Item extends Component {
       return getFormatedDate(date);
     };
 
-    const handleSelectChatItem = () => {
-      triggerChatSelect(id)
-    };
 
     return `
-    <div data-id = "${id}" class="${className} chat-item" onclick={{${wrapFunction(handleSelectChatItem)}}}>
+    <div data-id = "${id}" class="${className} chat-item"}}>
       <Chat.Avatar className="chat-item__avatar" image={{avatar}} />
       <div class="chat-item__last-message-detials">
         <div>

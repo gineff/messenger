@@ -1,7 +1,11 @@
-import { useContext, uid, stringifyProps } from "./index";
+import { useContext, nextId, stringifyProps } from "./index";
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-useless-escape */
+//         1           2                3         4                5                  6
+// re = <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag> | {{contextId}}
+const re = /<([A-Z][A-Za-z0-9._]*\b)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>|\{\{(\d+)\}\}/;
+const re2 = /<([A-Za-z0-9._]*)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>|\{\{(\d+)\}\}/;
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`]).*?\k<quote>|\d+|\{\{.*?\}\})/g;
 const quoteRegexp = /(?<quote>['"`])(.*?)\k<quote>/;
 const components = {};
@@ -51,12 +55,6 @@ function fillPropsFromState(messyProps, state) {
   );
 }
 
-function getTagRegExp() {
-  //         1           2                3         4                5
-  // re = <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
-  return /<([A-Z][A-Za-z0-9._]*\b)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>/;
-}
-
 function parseProps(str, state) {
   const messyProps = str ? parsePropsFromString(str) : null;
   // console.log("messyProps", messyProps);
@@ -95,21 +93,24 @@ export default class Component {
   }
 
   replaceNestedComponents(template) {
-    const re = getTagRegExp();
     let match;
     const nestedComponents = {};
 
     // eslint-disable-next-line no-cond-assign
     while ((match = template.match(re))) {
-      const id = uid();
-      const [rematch, singleTag, singleTagProps, pairedTag, pairedTagProps, children] = match;
+      const id = nextId();
+      const [rematch, singleTag, singleTagProps, pairedTag, pairedTagProps, children, contextId] = match;
 
       template = template.replace(rematch, `<embed id="${id}">`);
 
-      const props = parseProps(singleTagProps || pairedTagProps, this.state);
-      const NestedComponent = this.getComponentByTagName(singleTag || pairedTag);
-      const nestedComponent = new NestedComponent({ ...props, children: children?.trim() });
-      nestedComponents[id] = nestedComponent;
+      if (contextId) {
+        nestedComponents[id] = getContext(contextId);
+      } else {
+        const props = parseProps(singleTagProps || pairedTagProps, this.state);
+        const NestedComponent = this.getComponentByTagName(singleTag || pairedTag);
+        const nestedComponent = new NestedComponent({ ...props, children: children?.trim() });
+        nestedComponents[id] = nestedComponent;
+      }
     }
 
     return [template, nestedComponents];
@@ -126,9 +127,22 @@ export default class Component {
 
     Object.entries(nestedComponents).forEach(([key, value]) => {
       const embeded = temp.content.querySelector(`embed[id="${key}"]`);
-      embeded.replaceWith(value.element);
+      embeded.replaceWith(
+        Array.isArray(value)
+          ? value.reduce((prev, cur) => {
+              prev.append(cur.element);
+              return prev;
+            }, new DocumentFragment())
+          : value.element
+      );
     });
 
     this.element = temp.content;
+  }
+
+  renderSelf() {
+    this.compileTemplate();
+    const { className } = this.state;
+    document.querySelector(`.${className}`).replaceWith(this.element);
   }
 }

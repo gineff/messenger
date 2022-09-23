@@ -11,6 +11,11 @@ const getContext = (i) => _context[i];
 
 const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
 
+let id = 1;
+
+// eslint-disable-next-line no-plusplus
+const nextId = () => id++;
+
 const wrapFunction = (f) => {
   const id = uid();
   const functionAlias = `functionId${id}`;
@@ -43,7 +48,7 @@ const on = (key, cb) => {
     handlers = [];
   }
   handlers.push(cb);
-  this.eventMap.set(key, handlers);
+  eventMap.set(key, handlers);
 };
 
 const emit = (key, payload) => {
@@ -56,4 +61,4 @@ const emit = (key, payload) => {
 
 const useEventBus = [on, emit];
 
-export { wrapFunction, uid, goToElementHref, stringifyProps, useContext, useEventBus };
+export { wrapFunction, uid, nextId, goToElementHref, stringifyProps, useContext, useEventBus };

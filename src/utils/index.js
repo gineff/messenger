@@ -43,7 +43,7 @@ const on = (key, cb) => {
     handlers = [];
   }
   handlers.push(cb);
-  this.eventMap.set(key, handlers);
+  eventMap.set(key, handlers);
 };
 
 const emit = (key, payload) => {

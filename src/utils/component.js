@@ -7,7 +7,7 @@ import { useContext, nextId, stringifyProps } from "./index";
 const re = /<([A-Za-z0-9._]*)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>|\{\{(\d+)\}\}/;
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`]).*?\k<quote>|\d+|\{\{.*?\}\})/g;
 const quoteRegexp = /(?<quote>['"`])(.*?)\k<quote>/;
-const components = {};
+const components = new Map();
 const [getContext] = useContext;
 
 function getValue(path, obj) {
@@ -24,14 +24,6 @@ function getValue(path, obj) {
     }
   }
   return result;
-}
-
-function setComponentByTagName(tag, component) {
-  components[tag] = component;
-}
-
-function getComponentByTagName(tag) {
-  return components[tag];
 }
 
 function parsePropsFromString(str) {
@@ -75,16 +67,21 @@ function isHTMLTag(tag) {
   return tag[0] === tag[0].toLowerCase();
 }
 
+// *********************Component***************************
+
 export default class Component {
-  constructor(props) {
-    Object.entries(props).forEach(([key, value]) => {
+  constructor({ template, ...rest }) {
+    console.log(`%ccreate ${this.constructor.name}`, "color: blue");
+    this.template = template ?? this.template;
+
+    Object.entries(rest).forEach(([key, value]) => {
       if (value && Object.getPrototypeOf(value) === Component) {
-        setComponentByTagName(key, value);
+        components.set(key, value);
       } else {
         this.setState(key, value);
       }
     });
-    this.compileTemplate();
+    this.render();
   }
 
   state = {};
@@ -96,18 +93,28 @@ export default class Component {
   }
 
   createElements(template) {
+    template = template.replace(/\n|\s{2}/g, "");
     let match;
     const elements = [];
-    const i = 1;
-
+    let i = 2;
     // eslint-disable-next-line no-cond-assign
-    while ((match = template.match(re))) {
-      const [rematch, singleTag, singleTagProps, pairedTag, pairedTagProps, children, contextId] = match;
+    while ((match = template.match(re)) && i--) {
+
+      const [rematch, singleTag, singleTagProps, pairedTag, pairedTagProps, children, templateBlock] = match;
+      console.log(i, match);
 
       template = template.replace(rematch, "");
+      const tag = singleTag || pairedTag;
+      const propsString = singleTagProps || pairedTagProps;
+      const props = parseProps(propsString, this.state);
 
-      if (contextId) {
-        const component = getContext(contextId);
+      /*
+      if (templateBlock) {
+        console.log("templateBlock", templateBlock);
+        const component = getValue(templateBlock);
+
+        // const component = getContext(contextId);
+
         const componentsArray = Array.isArray(component) ? component : [component];
         componentsArray.forEach((comp) => {
           elements.push(...comp.elements);
@@ -116,18 +123,14 @@ export default class Component {
         // eslint-disable-next-line no-continue
         continue;
       }
-
-      const tag = singleTag || pairedTag;
-      const propsString = singleTagProps || pairedTagProps;
-      const props = parseProps(propsString, this.state);
+*/
 
       if (isHTMLTag(tag)) {
         const temp = document.createElement("template");
         temp.innerHTML = singleTag ? `<${tag} ${propsString} />` : `<${tag} ${propsString}></${tag}>`;
 
-        if (children) {
-          const childs = this.createElements(children);
-          temp.content.firstElementChild.append(...childs);
+        if (childElements) {
+          temp.content.firstElementChild.append(...childElements);
         }
 
         elements.push(temp.content);
@@ -135,13 +138,19 @@ export default class Component {
         continue;
       }
 
-      const component = new (getComponentByTagName(tag))({ ...props, children: children?.trim() });
-      elements.push(...component.elements);
+      try {
+        const component = new (components.get(tag))({ ...props, children: childElements });
+        elements.push(...component.elements);
+      } catch (e) {
+        console.error(`Ошибка при создании ${tag}`, e);
+      }
+
+      
     }
 
-    if (!match && template.length > 0) {
+    if (!match && templateStr.length > 0) {
       const temp = document.createElement("template");
-      temp.innerHTML = template;
+      temp.innerHTML = templateStr;
       elements.push(temp.content);
     }
 
@@ -149,12 +158,15 @@ export default class Component {
   }
 
   compileTemplate() {
-    const template = this.render()
-      .trim()
-      .replaceAll(/[\n\r]/g, "");
+    this.elements.push(...this.createElements(this.template));
+  }
 
-    this.elements.push(...this.createElements(template));
+  template = `<div">
+    {{children}}
+  </div>`;
 
-    console.log(this);
+  render() {
+    console.log(`%crender ${this.constructor.name}`, "color: blue");
+    this.elements.push(...this.createElements(this.template));
   }
 }

@@ -2,10 +2,9 @@ import { useContext, nextId, stringifyProps } from "./index";
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-useless-escape */
-//         1           2                3         4                5                  6
-// re = <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag> | {{contextId}}
-const re = /<([A-Z][A-Za-z0-9._]*\b)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>|\{\{(\d+)\}\}/;
-const re2 = /<([A-Za-z0-9._]*)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>|\{\{(\d+)\}\}/;
+//              1           2                3         4                5                  6
+// re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag> | {{contextId}}
+const re = /<([A-Za-z0-9._]*)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>|\{\{(\d+)\}\}/;
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`]).*?\k<quote>|\d+|\{\{.*?\}\})/g;
 const quoteRegexp = /(?<quote>['"`])(.*?)\k<quote>/;
 const components = {};
@@ -25,6 +24,14 @@ function getValue(path, obj) {
     }
   }
   return result;
+}
+
+function setComponentByTagName(tag, component) {
+  components[tag] = component;
+}
+
+function getComponentByTagName(tag) {
+  return components[tag];
 }
 
 function parsePropsFromString(str) {
@@ -64,11 +71,15 @@ function parseProps(str, state) {
   return props;
 }
 
+function isHTMLTag(tag) {
+  return tag[0] === tag[0].toLowerCase();
+}
+
 export default class Component {
   constructor(props) {
     Object.entries(props).forEach(([key, value]) => {
       if (value && Object.getPrototypeOf(value) === Component) {
-        this.setComponentByTagName(key, value);
+        setComponentByTagName(key, value);
       } else {
         this.setState(key, value);
       }
@@ -78,71 +89,72 @@ export default class Component {
 
   state = {};
 
+  elements = [];
+
   setState(key, value) {
     this.state[key] = value;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  setComponentByTagName(tag, NestedComponent) {
-    components[tag] = NestedComponent;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  getComponentByTagName(tag) {
-    return components[tag];
-  }
-
-  replaceNestedComponents(template) {
+  createElements(template) {
     let match;
-    const nestedComponents = {};
+    const elements = [];
+    const i = 1;
 
     // eslint-disable-next-line no-cond-assign
     while ((match = template.match(re))) {
-      const id = nextId();
       const [rematch, singleTag, singleTagProps, pairedTag, pairedTagProps, children, contextId] = match;
 
-      template = template.replace(rematch, `<embed id="${id}">`);
+      template = template.replace(rematch, "");
 
       if (contextId) {
-        nestedComponents[id] = getContext(contextId);
-      } else {
-        const props = parseProps(singleTagProps || pairedTagProps, this.state);
-        const NestedComponent = this.getComponentByTagName(singleTag || pairedTag);
-        const nestedComponent = new NestedComponent({ ...props, children: children?.trim() });
-        nestedComponents[id] = nestedComponent;
+        const component = getContext(contextId);
+        const componentsArray = Array.isArray(component) ? component : [component];
+        componentsArray.forEach((comp) => {
+          elements.push(...comp.elements);
+        });
+
+        // eslint-disable-next-line no-continue
+        continue;
       }
+
+      const tag = singleTag || pairedTag;
+      const propsString = singleTagProps || pairedTagProps;
+      const props = parseProps(propsString, this.state);
+
+      if (isHTMLTag(tag)) {
+        const temp = document.createElement("template");
+        temp.innerHTML = singleTag ? `<${tag} ${propsString} />` : `<${tag} ${propsString}></${tag}>`;
+
+        if (children) {
+          const childs = this.createElements(children);
+          temp.content.firstElementChild.append(...childs);
+        }
+
+        elements.push(temp.content);
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      const component = new (getComponentByTagName(tag))({ ...props, children: children?.trim() });
+      elements.push(...component.elements);
     }
 
-    return [template, nestedComponents];
+    if (!match && template.length > 0) {
+      const temp = document.createElement("template");
+      temp.innerHTML = template;
+      elements.push(temp.content);
+    }
+
+    return elements;
   }
 
   compileTemplate() {
     const template = this.render()
       .trim()
       .replaceAll(/[\n\r]/g, "");
-    const [embededTemplate, nestedComponents] = this.replaceNestedComponents(template);
 
-    const temp = document.createElement("template");
-    temp.innerHTML = embededTemplate;
+    this.elements.push(...this.createElements(template));
 
-    Object.entries(nestedComponents).forEach(([key, value]) => {
-      const embeded = temp.content.querySelector(`embed[id="${key}"]`);
-      embeded.replaceWith(
-        Array.isArray(value)
-          ? value.reduce((prev, cur) => {
-              prev.append(cur.element);
-              return prev;
-            }, new DocumentFragment())
-          : value.element
-      );
-    });
-
-    this.element = temp.content;
-  }
-
-  renderSelf() {
-    this.compileTemplate();
-    const { className } = this.state;
-    document.querySelector(`.${className}`).replaceWith(this.element);
+    console.log(this);
   }
 }

@@ -1,0 +1,3 @@
+<button href={{href}} class="button button_{{variant}} {{className}}">
+  {{title}}
+</button>

@@ -1,31 +1,17 @@
 import Component from "../../utils/component";
 import Header from "./components/header";
-import Body from "./components/body";
 import Footer from "./components/footer";
+import Body from "./components/body";
 import Group from "./components/group";
 import Label from "./components/label";
 import Control from "./components/control";
+import template from "./index.tem";
 import "./index.css";
 
+export { Header, Footer, Body, Group, Label, Control };
 
 export default class Form extends Component {
   constructor(props) {
-    super({
-      ...props,
-      "Form.Header": Header,
-      "Form.Body": Body,
-      "Form.Footer": Footer,
-      "Form.Group": Group,
-      "Form.Label": Label,
-      "Form.Control": Control,
-    });
-  }
-
-  render() {
-    const { children } = this.state;
-    return `
-    <div class="form">
-      ${children}
-    </div>`;
+    super({ ...props, template });
   }
 }

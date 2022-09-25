@@ -10,18 +10,14 @@ export { Messages, List, Header, SearchForm, MessagePanel };
 
 export default class Chat extends Component {
   constructor(props) {
-    super(props);
-    this.state = {
+    super({
+      ...props,
       Messages,
       List,
+      Header,
       SearchForm,
       MessagePanel,
-      children: props.children,
-    };
-  }
-
-  render() {
-    return `
-    <div>{{children}}</div>`;
+      template: "<div class='chat'>{{children}}</div>",
+    });
   }
 }

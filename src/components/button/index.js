@@ -1,17 +1,15 @@
 import Component from "../../utils/component";
-import { wrapFunction, stringifyProps } from "../../utils";
+import template from "./index.tem";
 import "./index.css";
 
 export default class Button extends Component {
-  render() {
-    const { className, title, variant, children, clickHandler, ...rest } = this.state;
+  constructor(props) {
+    super({ ...props, template });
+  }
 
-    return `
-    <button  
-    class="button ${variant ? `button_${variant}` : ""} ${className || ""}" 
-    ${clickHandler ? `onclick="${wrapFunction(clickHandler)}"` : ""}
-    ${stringifyProps(rest)}>
-      ${children || title || ""}
-    </button>`;
+  render() {
+    const {title, children} = this.state;
+    this.state.title = title || children;
+    return super.render();
   }
 }

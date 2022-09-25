@@ -1,5 +1,6 @@
-const goToElementHref = (element) => {
-  const href = element.getAttributeNode("href").value;
+const goToElementHref = (event) => {
+  console.log(event.target);
+  const href = event.target.getAttributeNode("href").value;
   if (href !== undefined) window.location = href;
 };
 
@@ -29,12 +30,7 @@ const stringifyProps = (props, keys = false) =>
       if ((keys && !keys.include(key)) || value === undefined) {
         return prev;
       }
-
-      if (typeof value === "string") {
-        return `${prev} ${key}="${value}"`;
-      }
-
-      return `${prev} ${key}={{${setContext(value)}}}`;
+      return `${prev} ${key}="${value}"`;
     }, "")
     .trim();
 

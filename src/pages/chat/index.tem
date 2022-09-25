@@ -1,0 +1,16 @@
+<Wrapper className="{{className}}">
+  <Sidebar>
+    <Sidebar.Header>
+      <User.ProfileLink onClick={{goToElementHref}}/>
+      <Chat.SearchForm onSubmit={{searchChat}}/>
+    </Sidebar.Header>
+    <Sidebar.Body>
+      <Chat.List chats={{chats}} />
+    </Sidebar.Body>
+  </Sidebar>
+  <Main>
+    <Chat.Header />
+    <Chat.Messages />
+    <Chat.MessagePanel />
+  </Main>
+</Wrapper>

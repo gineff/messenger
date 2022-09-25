@@ -1,5 +1,5 @@
 import Component from "../../utils/component";
-import { useContext, useEventBus } from "../../utils";
+import { goToElementHref, useContext, useEventBus } from "../../utils";
 import Wrapper from "../../components/wrapper";
 import Sidebar, { Header, Body } from "../../components/sidebar";
 import Main from "../../components/main";
@@ -8,14 +8,16 @@ import { ProfileLink } from "../../components/user";
 import chats from "../../../static/json/chats.json";
 import "./index.css";
 
-const [on, emit] = useEventBus;
-const [, setContext] = useContext;
+// const [on, emit] = useEventBus;
+// const [, setContext] = useContext;
 
 export default class ChatPage extends Component {
   constructor(props) {
     super({
       ...props,
       className: "chat-view",
+      goToElementHref,
+      searchChat: ()=> alert("chat search"),
       Wrapper,
       Sidebar,
       Main,
@@ -31,33 +33,21 @@ export default class ChatPage extends Component {
   }
 
   render() {
-    const { className, chat } = this.state;
 
-    on("onSearchSubmit", (chatName) => {
-      console.log(chatName);
-    });
 
-    on("chatSelect", (chat) => {
-      this.state = { ...this.state, chat };
-      this.renderSelf();
-    });
-
-    return `
-    <Wrapper className="${className}">
-      <Sidebar>
-        <Sidebar.Header>
-          <User.ProfileLink />
-          <Chat.SearchForm />
-        </Sidebar.Header>
-        <Sidebar.Body>
-          <Chat.List chats={{${setContext(chats)}}}/>
-        </Sidebar.Body>
-      </Sidebar>
-      <Main >
-        <Chat.Header />
-        <Chat.Messages />
-        <Chat.MessagePanel />
-      </Main> 
-    </Wrapper>`;
+    return super.render()
   }
 }
+
+/*
+const { className, chat } = this.state;
+
+on("onSearchSubmit", (chatName) => {
+  console.log(chatName);
+});
+
+on("chatSelect", (chat) => {
+  this.state = { ...this.state, chat };
+  this.renderSelf();
+});
+*/

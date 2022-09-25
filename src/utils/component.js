@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
 import { useContext } from "./index";
 /* eslint-disable no-cond-assign */
@@ -6,9 +7,8 @@ import { useContext } from "./index";
 /* eslint-disable no-useless-escape */
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
-const re = /<([A-Za-z0-9._]*)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>/;
-const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`]).*?\k<quote>|\d+|\{\{.*?\}\})/g;
-const quoteRegexp = /(?<quote>['"`])(.*?)\k<quote>/;
+const re = /<([A-Za-z0-9._]*)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>|context:(\d+)/;
+const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|\d+|context:(\d+))/g;
 const components = new Map();
 
 const eventMap = {
@@ -41,41 +41,14 @@ function parsePropsFromString(str) {
 
   // eslint-disable-next-line no-restricted-syntax
   for (const match of matches) {
-    props[match[1]] = (match[4] || match[2])?.trim();
+    const [, key, , , value, contextId] = match;
+    props[key] = contextId ? getContext(contextId) : value;
   }
   return props;
 }
 
-function fillPropsFromState(messyProps, state) {
-  return Object.fromEntries(
-    Object.entries(messyProps).map(([key, template]) => {
-      const match = template.match(/\{\{(.*?)\}\}/);
-      if (match) {
-        const data = parseFloat(match[1]) ? getContext(match[1]) : getValue(match[1], state);
-        if (data !== undefined) {
-          return [[key], data];
-        }
-        console.error(`переменная ${key} не определена в context`);
-      }
-      return [[key], template.trim().replace(quoteRegexp, "$2")];
-    })
-  );
-}
-
-function parseProps(str, state) {
-  const messyProps = str ? parsePropsFromString(str) : null;
-  // console.log("messyProps", messyProps);
-  const props = messyProps ? fillPropsFromState(messyProps, state) : {};
-  // console.log("props", props);
-
-  return props;
-}
-
-function compile(template, state) {
-  return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-    const value = getValue(key, state);
-    return typeof value === "string" ? value : `context-id:${setContext(value)}`;
-  });
+function parseProps(str) {
+  return str ? parsePropsFromString(str) : null;
 }
 
 function createElement(str) {
@@ -90,73 +63,39 @@ function addEventHandler(element, props) {
 
     const eventName = eventMap[key];
     if (eventName) {
-      element.addEventListener(eventName, handler);
+      element.addEventListener(eventName, handler, { capture: true });
     }
   });
 }
 
 function appendElement(element, parentNode) {
-  // console.dir(element);
   parentNode.append(element);
   return element;
 }
 
-function render(block, state) {
-  const container = new DocumentFragment();
-  let parentNode = container;
-  let match;
-  let element;
-  console.log(`%c${block.replace(/\n|\s{2}/g, "")}`, "font-size:9px");
-  block = block.replace(/\n|\s{2}/g, "");
+function isComponent(element) {
+  // eslint-disable-next-line no-use-before-define
+  return Object.getPrototypeOf(element) === Component;
+}
 
-  while ((match = block.match(re))) {
-    const [rematch, singleTag, singleTagProps, pairedTag, pairedTagProps, children] = match;
-
-    const tag = singleTag || pairedTag;
-    const propsString = singleTagProps || pairedTagProps;
-    const props = parseProps(propsString, state);
-
-    const Block = components.get(tag);
-
-    if (Block) {
-      block = block.replace(rematch, "");
-      const component = new Block({ ...props, children });
-      parentNode.append(component.elements);
-    } else {
-      block = block.replace(rematch, children);
-      const str = `<${tag} ${propsString} ${singleTag ? "/>" : `></${tag}>`}`;
-
-      element = createElement(str, props);
-      addEventHandler(element, props);
-
-      parentNode = appendElement(element, parentNode);
-    }
-  }
-
-  if (block.length > 0) {
-    element = createElement(block);
-    parentNode = appendElement(element, parentNode);
-  }
-
-  return container;
+function wrapToArray(element) {
+  return Array.isArray(element) ? element : [element];
 }
 
 // *********************Component***************************
 
 export default class Component {
   constructor({ template, ...rest }) {
-    console.log(`%ccreate ${this.constructor.name}`, "color: blue");
+    // console.log(`%ccreate ${this.constructor.name}`, "color: blue");
     this.template = template;
 
     Object.entries(rest).forEach(([key, value]) => {
-      if (value && Object.getPrototypeOf(value) === Component) {
+      if (value && isComponent(value)) {
         components.set(key, value);
       } else {
         this.setState(key, value);
       }
     });
-
-
   }
 
   state = {};
@@ -168,14 +107,77 @@ export default class Component {
   }
 
   _compile(template) {
+    if (!template) console.error(this.constructor.name, " отсутствует шаблон");
     return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
       const value = getValue(key, this.state);
-      return typeof value === "string" ? value : `context-id:${setContext(value)}`;
+
+      if (value === undefined) return "";
+      if (typeof value === "string") return value;
+
+      return `context:${setContext(value)}`;
     });
   }
 
+  render() {
+    this._render();
+    return this.container;
+  }
+
   _render() {
-    const block = this._compile(this.template);
-    this.elements = render(block, this.state);
+    let block = this._compile(this.template);
+    this.block = block;
+    const container = new DocumentFragment();
+    let parentNode = {
+      append: (element) => {
+        if (this.state) addEventHandler(element, this.state);
+        container.append(element);
+        return container;
+      },
+    };
+
+    let match;
+    let element;
+    // console.log(`%c${block.replace(/\n|\s{2}/g, "")}`, "font-size:9px");
+    block = block.replace(/\n|\s{2}/g, "");
+
+    while ((match = block.match(re))) {
+      const [rematch, singleTag, singleTagProps, pairedTag, pairedTagProps, children, context] = match;
+
+      const tag = singleTag || pairedTag;
+      const propsString = singleTagProps || pairedTagProps;
+      const props = parseProps(propsString);
+
+      const Block = components.get(tag);
+
+      if (Block) {
+        block = block.replace(rematch, "");
+        const component = new Block({ ...props, children });
+        parentNode.append(component.render());
+        continue;
+      }
+
+      if (context) {
+        block = block.replace(rematch, "");
+        const comps = wrapToArray(getContext(context));
+        const nodes = comps.map((component) => component.render());
+        parentNode.append(...nodes);
+        continue;
+      }
+
+      block = block.replace(rematch, children);
+      const str = `<${tag} ${propsString} ${singleTag ? "/>" : `></${tag}>`}`;
+
+      element = createElement(str, props);
+      if (props) addEventHandler(element, props);
+
+      parentNode = appendElement(element, parentNode);
+    }
+
+    if (block.length > 0) {
+      element = createElement(block);
+      parentNode = appendElement(element, parentNode);
+    }
+
+    this.container = container;
   }
 }

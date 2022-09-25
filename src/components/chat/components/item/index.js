@@ -2,7 +2,6 @@
 import Component from "../../../../utils/component";
 import Avatar from "../avatar";
 import "./index.css";
-import template from "./template.tmpl";
 
 const days = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 const monthsShort = ["Янв", "Фев", "Мар", "Апр", "Мая", "Июн", "Июл", "Авг", "Сен", "Ноя", "Дек"];
@@ -36,6 +35,17 @@ export default class Item extends Component {
 
     this.state = { ...this.state, formattedTime };
 
-    return template;
+    return `<div data-id = "{{chat.id}}" class="{{className}} chat-item">
+    <Chat.Avatar className="chat-item__avatar" image={{chat.avatar}} />
+    <div class="chat-item__last-message-detials">
+    <div>
+      <div class="chat-item__title">{{chat.title}}</div>
+      <div class="chat-item__last-message-time">{{formattedTime}}</div>
+    </div>
+    <div>
+      <div class="chat-item__last-message-content">{{chat.last_message.content}}</div>
+      <div class="chat-item__last-message-detials-unread-count">{{chat.unread_count}}</div>
+    </div>
+  </div>`;
   }
 }

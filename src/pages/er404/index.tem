@@ -1,0 +1,3 @@
+<Wrapper className = "error404">
+  <p>not found</p>
+</Wrapper>

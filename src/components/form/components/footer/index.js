@@ -1,11 +1,9 @@
 import Component from "../../../../utils/component";
+import template from "./index.tem";
+
 
 export default class Footer extends Component {
-  render() {
-    const { children } = this.state;
-    return `
-    <div class="form__footer">
-      ${children}
-    </div>`;
+  constructor(props) {
+    super({ ...props, template });
   }
 }

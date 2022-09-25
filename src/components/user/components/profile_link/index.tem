@@ -1,0 +1,3 @@
+<div class="user__profile-link">
+  <Button {{buttonProps}}>Профиль  ></Button>
+</div>

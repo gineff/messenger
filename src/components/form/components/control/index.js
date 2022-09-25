@@ -1,11 +1,16 @@
 import Component from "../../../../utils/component";
-import { stringifyProps, wrapFunction } from "../../../../utils";
+import { stringifyProps } from "../../../../utils";
+import template from "./index.tem";
 import "./index.css";
 
 export default class Control extends Component {
-  render() {
-    const { onblur, className, ...restProps } = this.state;
+  constructor(props) {
+    super({ ...props, template });
+  }
 
-    return `<input class="form__control ${className}" ${stringifyProps(restProps)} onblur="${wrapFunction(onblur)}"/>`;
+  render() {
+    const { className, children, ...rest } = this.state;
+    this.state.rest = stringifyProps(rest);
+    return super.render();
   }
 }

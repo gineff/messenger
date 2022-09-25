@@ -5,12 +5,7 @@ import "./index.css";
 export { ProfileLink };
 
 export default class User extends Component {
-  render() {
-    const { children } = this.state;
-
-    return `
-    <div class="user">
-      ${children}
-    </div>`;
+  constructor(props) {
+    super({ ...props, template: "<div class='user'>{{children}}</div>" });
   }
 }

@@ -1,12 +1,12 @@
 import Login from "../pages/login";
 import Register from "../pages/register";
 import Er404 from "../pages/er404";
-// import Chat from "../pages/chat";
+import Chat from "../pages/chat";
 
 const routes = {
   login: Login,
   register: Register,
-  // chat: Chat,
+  chat: Chat,
   404: Er404,
 };
 

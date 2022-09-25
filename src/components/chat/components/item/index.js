@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import Component from "../../../../utils/component";
 import Avatar from "../avatar";
+import template from "./index.tem";
 import "./index.css";
 
 const days = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
@@ -14,7 +15,7 @@ const todayStr = today.toISOString().slice(0, 10);
 
 export default class Item extends Component {
   constructor(props) {
-    super({ ...props, "Chat.Avatar": Avatar });
+    super({ ...props, template, "Chat.Avatar": Avatar });
   }
 
   render() {
@@ -35,17 +36,6 @@ export default class Item extends Component {
 
     this.state = { ...this.state, formattedTime };
 
-    return `<div data-id = "{{chat.id}}" class="{{className}} chat-item">
-    <Chat.Avatar className="chat-item__avatar" image={{chat.avatar}} />
-    <div class="chat-item__last-message-detials">
-    <div>
-      <div class="chat-item__title">{{chat.title}}</div>
-      <div class="chat-item__last-message-time">{{formattedTime}}</div>
-    </div>
-    <div>
-      <div class="chat-item__last-message-content">{{chat.last_message.content}}</div>
-      <div class="chat-item__last-message-detials-unread-count">{{chat.unread_count}}</div>
-    </div>
-  </div>`;
+    return super.render();
   }
 }

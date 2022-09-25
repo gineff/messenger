@@ -6,6 +6,7 @@ import Main from "../../components/main";
 import { SearchForm, List, Messages, Header as ChatHeader, MessagePanel } from "../../components/chat";
 import { ProfileLink } from "../../components/user";
 import chats from "../../../static/json/chats.json";
+import template from "./index.tem";
 import "./index.css";
 
 // const [on, emit] = useEventBus;
@@ -17,7 +18,9 @@ export default class ChatPage extends Component {
       ...props,
       className: "chat-view",
       goToElementHref,
-      searchChat: ()=> alert("chat search"),
+      searchChat: () => alert("chat search"),
+      template,
+      chats,
       Wrapper,
       Sidebar,
       Main,
@@ -33,9 +36,7 @@ export default class ChatPage extends Component {
   }
 
   render() {
-
-
-    return super.render()
+    return super.render();
   }
 }
 

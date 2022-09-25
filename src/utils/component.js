@@ -78,8 +78,27 @@ function isComponent(element) {
   return Object.getPrototypeOf(element) === Component;
 }
 
+function isComponentInstance(element) {
+  // eslint-disable-next-line no-use-before-define
+  return element instanceof Component || element[0] instanceof Component;
+}
+
+function isPrimitive(element) {
+  return Object(element) !== element;
+}
+
 function wrapToArray(element) {
   return Array.isArray(element) ? element : [element];
+}
+
+function hasSiblings(block, rematch) {
+  return block.replace(rematch, "").length > 0;
+}
+
+function createDomMap(dom) {
+  const template = document.createElement("template");
+  template.innerHTML = dom;
+  console.log(template.content);
 }
 
 // *********************Component***************************
@@ -108,11 +127,12 @@ export default class Component {
 
   _compile(template) {
     if (!template) console.error(this.constructor.name, " отсутствует шаблон");
-    return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+
+    return template.replace(/\{\{([A-Za-z0-9._-]+)\}\}/g, (match, key) => {
       const value = getValue(key, this.state);
 
       if (value === undefined) return "";
-      if (typeof value === "string") return value;
+      if (isPrimitive(value)) return value;
 
       return `context:${setContext(value)}`;
     });
@@ -126,7 +146,11 @@ export default class Component {
   _render() {
     let block = this._compile(this.template);
     this.block = block;
+
+    createDomMap(block);
+
     const container = new DocumentFragment();
+
     let parentNode = {
       append: (element) => {
         if (this.state) addEventHandler(element, this.state);
@@ -158,19 +182,24 @@ export default class Component {
 
       if (context) {
         block = block.replace(rematch, "");
-        const comps = wrapToArray(getContext(context));
-        const nodes = comps.map((component) => component.render());
-        parentNode.append(...nodes);
-        continue;
+        const contextValue = getContext(context);
+
+        if (isComponentInstance(contextValue)) {
+          const comps = wrapToArray(contextValue);
+          const nodes = comps.map((component) => component.render());
+          parentNode.append(...nodes);
+        } else {
+          parentNode.append(document.createTextNode(contextValue));
+        }
+      } else {
+        // if html element
+        block = block.replace(rematch, children);
+        const str = `<${tag} ${propsString} ${singleTag ? "/>" : `></${tag}>`}`;
+        element = createElement(str, props);
+        if (props) addEventHandler(element, props);
+
+        parentNode = appendElement(element, parentNode);
       }
-
-      block = block.replace(rematch, children);
-      const str = `<${tag} ${propsString} ${singleTag ? "/>" : `></${tag}>`}`;
-
-      element = createElement(str, props);
-      if (props) addEventHandler(element, props);
-
-      parentNode = appendElement(element, parentNode);
     }
 
     if (block.length > 0) {

@@ -1,0 +1,54 @@
+
+compile
+
+<div data-id="123" class="chat-item chat__item">
+  <Chat.Avatar className="chat-item__avatar" image="/123" avatar1.jpg />
+  <div class="chat-item__last-message-detials">
+    <div class="row1">
+      <div class="chat-item__title">my-chat</div>
+      <div class="chat-item__last-message-time">22 Сен 2022</div>
+    </div>
+    <div class="row2">
+      <div class="chat-item__last-message-content">Изображение</div>
+      <div class="chat-item__last-message-detials-unread-count">2</div>
+    </div>
+  </div>
+</div>
+
+1 
+<div data-id="123" class="chat-item chat__item" parentNode></div> 
+
+2 
+<div data-id="123" class="chat-item chat__item" parentNode> 
+    Бух в парент нод, без смены ссылка на парент нод
+    <Chat.Avatar className="chat-item__avatar" image="/123" avatar1.jpg />
+</div>
+
+3
+<div data-id="123" class="chat-item chat__item">
+  <Chat.Avatar className="chat-item__avatar" image="/123" avatar1.jpg />
+  <div class="chat-item__last-message-detials" parentNode>
+
+  </div>
+</div>
+
+4
+<div data-id="123" class="chat-item chat__item">
+  <Chat.Avatar className="chat-item__avatar" image="/123" avatar1.jpg />
+  <div class="chat-item__last-message-detials">
+    <div class="row1" parentNode>
+    </div>  
+  </div>
+</div>
+
+5
+<div data-id="123" class="chat-item chat__item">
+  <Chat.Avatar className="chat-item__avatar" image="/123" avatar1.jpg />
+  <div class="chat-item__last-message-detials">
+    <div class="row1">
+      <div class="chat-item__title" parentNode>my-chat</div>
+
+      </div>  
+    </div>  
+  </div>
+</div>

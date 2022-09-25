@@ -1,8 +1,8 @@
 <Wrapper className="{{className}}">
   <Sidebar>
     <Sidebar.Header>
-      <User.ProfileLink onClick={{goToElementHref}}/>
-      <Chat.SearchForm onSubmit={{searchChat}}/>
+      <User.ProfileLink onClick={{goToElementHref}} />
+      <Chat.SearchForm onSubmit={{searchChat}} />
     </Sidebar.Header>
     <Sidebar.Body>
       <Chat.List chats={{chats}} />

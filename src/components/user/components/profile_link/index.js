@@ -7,10 +7,11 @@ export default class ProfileLink extends Component {
   constructor(props) {
     super({ ...props, template, Button });
 
-    this.state.buttonProps = {
+    this.state.button = new Button({
       variant: "link",
       href: "/profile",
       className: "user_profile-link-button",
-    };
+      title: "Профиль   >",
+    });
   }
 }

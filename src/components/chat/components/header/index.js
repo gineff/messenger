@@ -1,7 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 import Component from "../../../../utils/component";
 import Avatar from "../avatar";
 import Button from "../../../button";
 import template from "./index.tem";
+import content from "./content.tem";
 import "./index.css";
 
 
@@ -14,11 +16,7 @@ export default class Header extends Component {
     const { chat } = this.state;
     const chatIsSelected = Boolean(chat);
 
-    this.state.content = chatIsSelected
-      ? `<Chat.Avatar className = "chat-header__avatar" image={{chat.avatar}}/>
-    <div class="chat-header__title">{{chat.title}}</div>
-    <Button className="chat-header__menu" />`
-      : "";
+    this.state.content = chatIsSelected ? this._compile(content, this.state) : "";
 
     return super.render();
   }

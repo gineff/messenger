@@ -8,7 +8,6 @@
     <div class="row2">
       <div class="chat-item__last-message-content">{{chat.last_message.content}}</div>
       <div class="chat-item__last-message-detials-unread-count">{{chat.unread_count}}</div>
-      
     </div>
   </div>
 </div>

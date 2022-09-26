@@ -88,7 +88,10 @@ function wrapToArray(element) {
 }
 
 function childrenIsPureHtml(children) {
-  return !reNotPureHtml.test(children);
+  const pure = !reNotPureHtml.test(children);
+  if (pure) console.log("rePure - ", children, Array.from(children.matchAll(reNotPureHtml)));
+  // const reNotPureHtml = /<[A-Z][a-z0-9._]*|context:\d+/g;
+  return pure;
 }
 
 function renderContextElement(context) {
@@ -156,23 +159,38 @@ export default class Component {
     let element;
     const matches = this.block.matchAll(re);
 
+    // nested <div class="parent"><div class="child"></div></div>
+    // <div><div></div> - если не жадный
+    // почему отказался от жадности? что то было с sibling
+    // siblings <div class="parent"><div class="siblings 1"></div><div class="siblings 2"></div></div>
+
+    // <(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?> 
+    // [all, tag, props, children]
+    // nested ->  
     for (const match of matches) {
       const [all, singleTag, singleTagProps, pairedTag, pairedTagProps, children, context] = match;
 
       const tag = singleTag || pairedTag;
       const props = parseProps(singleTagProps || pairedTagProps);
-      /*
+
       console.log(`%c${tag}`, "color:blue");
-      console.log("all", all);
-      console.log("this", all.replace(children, ""));
-      console.log("children", children);
-*/
-      if (context) {
-        element = renderContextElement(context);
-      } else if (components.has(tag)) {
+      console.log("all - ", all);
+      console.log("this - ", all.replace(children, ""));
+      console.log("children - ", children);
+
+      if (components.has(tag)) {
         element = new (components.get(tag))({ ...props, children }).render();
-      } else if (singleTag || childrenIsPureHtml(children)) {
+      } else if (singleTag) {
+        // нужен только для того, чтобы избежать проверки на следующем шаге
         element = createElement(all);
+      } else if (childrenIsPureHtml(children)) {
+        // сам, а не потомок, являешься чистым?
+        // 1 являешься. иначе бы отсеяляся на 1 шаге
+        // как сюда попадают context?
+        element = createElement(all);
+        console.log("children pure html", children, element);
+      } else if (context) {
+        element = renderContextElement(context);
       } else {
         element = createElement(all.replace(children, ""));
         const child = new Component({ ...props, template: children }).render();

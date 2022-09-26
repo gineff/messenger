@@ -10,11 +10,13 @@ const routes = {
   404: Er404,
 };
 
-function render(Component) {
-  const component = new Component();
+function render(Comp) {
+  const component = new Comp();
   const root = document.getElementById("root");
   root.innerHTML = "";
-  root.appendChild(component.render());
+  const result = component.render();
+  console.log(result);
+  // root.append(...component.render());
 }
 
 export default function route() {

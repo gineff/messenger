@@ -1,5 +1,6 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
+import e from "express";
 import { useContext } from "./index";
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-param-reassign */
@@ -7,7 +8,8 @@ import { useContext } from "./index";
 /* eslint-disable no-useless-escape */
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
-const re = /<([A-Za-z0-9._]*)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]*)(.*?)>(.*?)<\/\k<tag>\s?>|context:(\d+)/;
+const re = /<([A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*)<\/\k<tag>\s?>|context:(\d+)/g;
+const reNotPureHtml = /<[A-Z][a-z0-9._]*|context:\d+/g;
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|\d+|context:(\d+))/g;
 const components = new Map();
 
@@ -101,12 +103,27 @@ function createDomMap(dom) {
   console.log(template.content);
 }
 
+function childrenIsPureHtml(children) {
+  return !reNotPureHtml.test(children);
+}
+
+function renderContextElement(context) {
+  let nodes;
+  const contextValue = getContext(context);
+  if (isComponentInstance(contextValue)) {
+    const comps = wrapToArray(contextValue);
+    nodes = comps.map((component) => component.render());
+  } else {
+    nodes = wrapToArray(document.createTextNode(contextValue));
+  }
+  return nodes;
+}
+
 // *********************Component***************************
 
 export default class Component {
-  constructor({ template, ...rest }) {
-    // console.log(`%ccreate ${this.constructor.name}`, "color: blue");
-    this.template = template;
+  constructor({ template, tag, ...rest }) {
+    this.template = template || `<${tag}>{{${rest?.children}}}</${tag}>`;
 
     Object.entries(rest).forEach(([key, value]) => {
       if (value && isComponent(value)) {
@@ -144,69 +161,37 @@ export default class Component {
   }
 
   _render() {
-    let block = this._compile(this.template);
-    this.block = block;
-
-    createDomMap(block);
-
-    const container = new DocumentFragment();
-
-    let parentNode = {
-      append: (element) => {
-        if (this.state) addEventHandler(element, this.state);
-        container.append(element);
-        return container;
-      },
-    };
-
-    let match;
+    this.block = this._compile(this.template).replace(/\n|\s{2}/g, "");
+    this.container = [];
     let element;
-    // console.log(`%c${block.replace(/\n|\s{2}/g, "")}`, "font-size:9px");
-    block = block.replace(/\n|\s{2}/g, "");
+    const matches = this.block.matchAll(re);
 
-    while ((match = block.match(re))) {
-      const [rematch, singleTag, singleTagProps, pairedTag, pairedTagProps, children, context] = match;
+    for (const match of matches) {
+      const [all, singleTag, singleTagProps, pairedTag, pairedTagProps, children, context] = match;
 
       const tag = singleTag || pairedTag;
-      const propsString = singleTagProps || pairedTagProps;
-      const props = parseProps(propsString);
-
-      const Block = components.get(tag);
-
-      if (Block) {
-        block = block.replace(rematch, "");
-        const component = new Block({ ...props, children });
-        parentNode.append(component.render());
-        continue;
-      }
+      const props = parseProps(singleTagProps || pairedTagProps);
 
       if (context) {
-        block = block.replace(rematch, "");
-        const contextValue = getContext(context);
-
-        if (isComponentInstance(contextValue)) {
-          const comps = wrapToArray(contextValue);
-          const nodes = comps.map((component) => component.render());
-          parentNode.append(...nodes);
-        } else {
-          parentNode.append(document.createTextNode(contextValue));
-        }
+        element = renderContextElement(context);
+      } else if (components.has(tag)) {
+        element = new (components.get(tag))(...props, children);
+      } else if (singleTag || childrenIsPureHtml(children)) {
+        element = createElement(all);
       } else {
-        // if html element
-        block = block.replace(rematch, children);
-        const str = `<${tag} ${propsString} ${singleTag ? "/>" : `></${tag}>`}`;
-        element = createElement(str, props);
-        if (props) addEventHandler(element, props);
-
-        parentNode = appendElement(element, parentNode);
+        element = createElement(all.replace("children", ""));
+        element.append(new Component({ ...props, template: children }));
       }
+      this.container.push(element);
     }
 
-    if (block.length > 0) {
-      element = createElement(block);
-      parentNode = appendElement(element, parentNode);
+    const rest = this.block.replaceAll(re, "");
+    if (rest) {
+      element = document.createTextNode(rest);
+      this.container.push(element);
+      console.log("rest", rest);
     }
 
-    this.container = container;
+    console.log(this.container);
   }
 }

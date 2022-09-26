@@ -1,0 +1,45 @@
+<Wrapper className="login-form">
+  <Form>
+    <Form.Header>Вход</Form.Header>
+    <Form.Body>
+      <Form.Group>
+        <Form.Label>Логин</Form.Label>
+        <Form.Control name="login" type="text" placeholder="ivanivanov" />
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>Пароль</Form.Label>
+        <Form.Control name="password" type="password" placeholder="••••••••••••" />
+      </Form.Group>
+    </Form.Body>
+    <Form.Footer onClick="context:1">
+      context:2
+    </Form.Footer>
+  </Form>
+</Wrapper>
+
+<div class="form__body">
+  /*----------*/
+  <Form.Group>
+    <Form.Label>Логин</Form.Label>
+    <Form.Control name="login" type="text" placeholder="ivanivanov" />
+  </Form.Group>
+  <Form.Group>
+    <Form.Label>Пароль</Form.Label>
+    <Form.Control name="password" type="password" placeholder="••••••••••••" />
+  </Form.Group>
+
+  /*--------------*/
+</div>
+
+
+
+
+
+<div class="form__body">
+  <div class="form__group" onclick="">
+    <div class="form__label">
+      <input class="form__control" name="login" type="text" placeholder="ivanivanov" />
+    </div>
+    <input class="form__control" name="password" type="password" placeholder="••••••••••••" />
+  </div>
+</div>

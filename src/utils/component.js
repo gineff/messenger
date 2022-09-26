@@ -1,6 +1,5 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
-import e from "express";
 import { useContext } from "./index";
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-param-reassign */
@@ -8,7 +7,7 @@ import { useContext } from "./index";
 /* eslint-disable no-useless-escape */
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
-const re = /<([A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*)<\/\k<tag>\s?>|context:(\d+)/g;
+const re = /<([A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/g;
 const reNotPureHtml = /<[A-Z][a-z0-9._]*|context:\d+/g;
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|\d+|context:(\d+))/g;
 const components = new Map();
@@ -112,7 +111,10 @@ function renderContextElement(context) {
   const contextValue = getContext(context);
   if (isComponentInstance(contextValue)) {
     const comps = wrapToArray(contextValue);
-    nodes = comps.map((component) => component.render());
+    nodes = comps.reduce((arr, component) => {
+      arr.push(...component.render());
+      return arr;
+    }, []);
   } else {
     nodes = wrapToArray(document.createTextNode(contextValue));
   }
@@ -171,27 +173,34 @@ export default class Component {
 
       const tag = singleTag || pairedTag;
       const props = parseProps(singleTagProps || pairedTagProps);
-
+      /*
+      console.log(`%c${tag}`, "color:blue");
+      console.log("all", all);
+      console.log("this", all.replace(children, ""));
+      console.log("children", children);
+*/
       if (context) {
         element = renderContextElement(context);
       } else if (components.has(tag)) {
-        element = new (components.get(tag))(...props, children);
+        element = new (components.get(tag))({ ...props, children }).render();
       } else if (singleTag || childrenIsPureHtml(children)) {
         element = createElement(all);
       } else {
-        element = createElement(all.replace("children", ""));
-        element.append(new Component({ ...props, template: children }));
+        element = createElement(all.replace(children, ""));
+        const child = new Component({ ...props, template: children }).render();
+        element.append(...child);
       }
-      this.container.push(element);
+
+      this.container.push(...wrapToArray(element));
     }
 
-    const rest = this.block.replaceAll(re, "");
+    /* const rest = this.block.replaceAll(re, "");
     if (rest) {
       element = document.createTextNode(rest);
       this.container.push(element);
       console.log("rest", rest);
-    }
-
-    console.log(this.container);
+      console.log("this.block", this.block);
+      console.log("this", this);
+    } */
   }
 }

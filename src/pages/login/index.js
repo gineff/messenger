@@ -49,7 +49,6 @@ export default class Login extends Component {
       )
       .join("\n");
 
-
     const ninjaData = [
       {
         variant: "primary",
@@ -66,5 +65,9 @@ export default class Login extends Component {
     ];
 
     this.state.buttons = ninjaData.map((data) => new Button(data));
+  }
+
+  render() {
+    return super.render();
   }
 }

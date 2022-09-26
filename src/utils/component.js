@@ -69,11 +69,6 @@ function addEventHandler(element, props) {
   });
 }
 
-function appendElement(element, parentNode) {
-  parentNode.append(element);
-  return element;
-}
-
 function isComponent(element) {
   // eslint-disable-next-line no-use-before-define
   return Object.getPrototypeOf(element) === Component;
@@ -90,16 +85,6 @@ function isPrimitive(element) {
 
 function wrapToArray(element) {
   return Array.isArray(element) ? element : [element];
-}
-
-function hasSiblings(block, rematch) {
-  return block.replace(rematch, "").length > 0;
-}
-
-function createDomMap(dom) {
-  const template = document.createElement("template");
-  template.innerHTML = dom;
-  console.log(template.content);
 }
 
 function childrenIsPureHtml(children) {
@@ -159,6 +144,9 @@ export default class Component {
 
   render() {
     this._render();
+    this.container.forEach((element) => addEventHandler(element, this.state));
+
+    // дублирование на компоненте и див?
     return this.container;
   }
 
@@ -191,16 +179,8 @@ export default class Component {
         element.append(...child);
       }
 
+      element = wrapToArray(element);
       this.container.push(...wrapToArray(element));
     }
-
-    /* const rest = this.block.replaceAll(re, "");
-    if (rest) {
-      element = document.createTextNode(rest);
-      this.container.push(element);
-      console.log("rest", rest);
-      console.log("this.block", this.block);
-      console.log("this", this);
-    } */
   }
 }

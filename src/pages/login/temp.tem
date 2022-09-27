@@ -43,3 +43,9 @@
     <input class="form__control" name="password" type="password" placeholder="••••••••••••" />
   </div>
 </div>
+
+
+"<div data-id="129" class="chat-item chat__item ">
+  <Chat.Avatar className="chat-item__avatar" image="/125/avatar1.jpg" />
+  <div class="chat-item__last-message-detials">
+    <div class="row1"><div class="chat-item__title">Design Destryer</div><div class="chat-item__last-message-time">18 Сен 2022</div></div><div class="row2"><div class="chat-item__last-message-content">В 2008 году худоник John Rafman начал собирать...</div><div class="chat-item__last-message-detials-unread-count">0</div></div></div></div>"

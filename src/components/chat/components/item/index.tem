@@ -1,5 +1,5 @@
 <div data-id="{{chat.id}}" class="chat-item {{className}}">
-  <Chat.Avatar className="chat-item__avatar" image={{chat.avatar}} />
+  <Chat.Avatar className="chat-item__avatar" image="{{chat.avatar}}" />
   <div class="chat-item__last-message-detials">
     <div class="row1">
       <div class="chat-item__title">{{chat.title}}</div>

@@ -7,8 +7,7 @@ import { useContext } from "./index";
 /* eslint-disable no-useless-escape */
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
-const re = /<([A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/g;
-const reNotPureHtml = /<[A-Z][a-z0-9._]*|context:\d+/g;
+const re = /<([A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*)<\/\k<tag>\s?>|context:(\d+)/g;
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|\d+|context:(\d+))/g;
 const components = new Map();
 
@@ -55,6 +54,7 @@ function parseProps(str) {
 function createElement(str) {
   const fragment = document.createElement("template");
   fragment.innerHTML = str;
+  // console.log(str, " --------------- ", fragment.content.firstChild.outerHTML);
   return fragment.content.firstChild;
 }
 
@@ -85,13 +85,6 @@ function isPrimitive(element) {
 
 function wrapToArray(element) {
   return Array.isArray(element) ? element : [element];
-}
-
-function childrenIsPureHtml(children) {
-  const pure = !reNotPureHtml.test(children);
-  if (pure) console.log("rePure - ", children, Array.from(children.matchAll(reNotPureHtml)));
-  // const reNotPureHtml = /<[A-Z][a-z0-9._]*|context:\d+/g;
-  return pure;
 }
 
 function renderContextElement(context) {
@@ -160,17 +153,10 @@ export default class Component {
     const matches = this.block.matchAll(re);
 
     for (const match of matches) {
+      console.log(match);
       const [all, singleTag, singleTagProps, pairedTag, pairedTagProps, children, context] = match;
-
       const tag = singleTag || pairedTag;
       const props = parseProps(singleTagProps || pairedTagProps);
-
-      /*
-      console.log(`%c${tag}`, "color:blue");
-      console.log("all - ", all);
-      console.log("this - ", all.replace(children, ""));
-      console.log("children - ", children);
-*/
 
       if (components.has(tag)) {
         element = new (components.get(tag))({ ...props, children }).render();

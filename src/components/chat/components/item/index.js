@@ -35,7 +35,7 @@ export default class Item extends Component {
     })();
 
     this.state = { ...this.state, formattedTime };
-
+    // console.log(this);
     return super.render();
   }
 }

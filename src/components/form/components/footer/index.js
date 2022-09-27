@@ -7,7 +7,6 @@ export default class Footer extends Component {
   }
 
   render() {
-    console.log(this);
     return super.render();
   }
 }

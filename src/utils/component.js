@@ -8,8 +8,9 @@ import { useContext } from "./index";
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
 const re = /<([A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/g;
+const reGreed = /<([A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*)<\/\k<tag>\s?>|context:(\d+)/g;
 const reNotPureHtml = /<[A-Z][a-z0-9._]*|context:\d+/g;
-const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|\d+|context:(\d+))/g;
+const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|context:(\d+))|(\w+)/g;
 const components = new Map();
 
 const eventMap = {
@@ -36,14 +37,16 @@ function getValue(path, obj) {
 }
 
 function parsePropsFromString(str) {
-  if (str === undefined || !str?.trim()) return undefined;
+  if (str === undefined) return undefined;
+  if (str === "") return "";
+
   const props = {};
   const matches = str.matchAll(propsRegexp);
 
   // eslint-disable-next-line no-restricted-syntax
   for (const match of matches) {
-    const [, key, , , value, contextId] = match;
-    props[key] = contextId ? getContext(contextId) : value;
+    const [, key, , , value, contextId, attribute] = match;
+    props[attribute || key] = attribute || (contextId ? getContext(contextId) : value);
   }
   return props;
 }
@@ -87,11 +90,7 @@ function wrapToArray(element) {
   return Array.isArray(element) ? element : [element];
 }
 
-function childrenIsPureHtml(children) {
-  return !reNotPureHtml.test(children);
-}
-
-function renderContextElement(context) {
+function createContextElement(context) {
   let nodes;
   const contextValue = getContext(context);
   if (isComponentInstance(contextValue)) {
@@ -153,34 +152,42 @@ export default class Component {
   _render() {
     this.block = this._compile(this.template).replace(/\n|\s{2}/g, "");
     this.container = [];
+    // container for html elements
     let element;
-    const matches = this.block.matchAll(re);
+    console.log(this.state.sequence, this);
+    const matches = Array.from(this.block.matchAll(this.state.sequence ? re : reGreed));
+    // if component props (this.state) has sequence attr, then component has siblings children,
+    // and matches.length > 1.
+    // if (this.constructor.name === "Body")
 
-    for (const match of matches) {
+    matches.forEach((match) => {
       const [all, singleTag, singleTagProps, pairedTag, pairedTagProps, children, context] = match;
-
       const tag = singleTag || pairedTag;
       const props = parseProps(singleTagProps || pairedTagProps);
-      /*
-      console.log(`%c${tag}`, "color:blue");
-      console.log("all", all);
-      console.log("this", all.replace(children, ""));
-      console.log("children", children);
-*/
-      if (context) {
-        element = renderContextElement(context);
-      } else if (components.has(tag)) {
+
+      if (components.has(tag)) {
+        // if: Form.Header
         element = new (components.get(tag))({ ...props, children }).render();
-      } else if (singleTag || childrenIsPureHtml(children)) {
-        element = createElement(all);
+      } else if (context) {
+        // context:id
+        element = createContextElement(context);
       } else {
+        // if: simple html node, like div. This element = block - children
+        
         element = createElement(all.replace(children, ""));
-        const child = new Component({ ...props, template: children }).render();
-        element.append(...child);
+
+        if (children) {
+          const childContainer = new Component({ ...props, template: children }).render();
+          element.append(...childContainer);
+        }
       }
 
-      element = wrapToArray(element);
       this.container.push(...wrapToArray(element));
+    });
+
+    // the rest of match is textNode
+    if (matches.length === 0 && this.block.length > 0) {
+      this.container.push(document.createTextNode(this.block));
     }
   }
 }

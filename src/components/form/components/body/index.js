@@ -1,12 +1,13 @@
 import Component from "../../../../utils/component";
+import template from "./index.tem";
 import "./index.css";
 
 export default class Body extends Component {
+  constructor(props) {
+    super({ ...props, template });
+  }
+
   render() {
-    const { children } = this.state;
-    return `
-    <div class="form__body">
-      ${children}
-    </div>`;
+    return super.render();
   }
 }

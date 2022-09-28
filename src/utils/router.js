@@ -10,14 +10,16 @@ const routes = {
   404: Er404,
 };
 
-function render(Component) {
-  const component = new Component();
+function render(Comp) {
+  const component = new Comp();
   const root = document.getElementById("root");
   root.innerHTML = "";
-  root.appendChild(component.element);
+  const result = component.render();
+  root.append(result);
 }
 
 export default function route() {
   const path = document.location.pathname.slice(1);
   render(routes[path] ?? routes[404]);
+  // render(Login);
 }

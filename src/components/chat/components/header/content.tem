@@ -1,0 +1,3 @@
+<Chat.Avatar className = "chat-header__avatar" image={{chat.avatar}}/>
+<div class="chat-header__title">{{chat.title}}</div>
+<Button className="chat-header__menu" />

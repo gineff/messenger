@@ -1,0 +1,13 @@
+<Wrapper className="login-form">
+  <Form sequence>
+    <Form.Header>
+      Вход
+    </Form.Header>
+    <Form.Body sequence>
+      {{inputsView}}
+    </Form.Body>
+    <Form.Footer sequence>
+      {{buttons}}
+    </Form.Footer>
+  </Form>
+</Wrapper>

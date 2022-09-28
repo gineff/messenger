@@ -1,45 +1,53 @@
 import Component from "../../utils/component";
-import { goToElementHref, stringifyProps, useContext } from "../../utils";
+import { goToElementHref, stringifyProps } from "../../utils";
 import Wrapper from "../../components/wrapper";
-import Form from "../../components/form";
+import Form, { Header, Footer, Body, Group, Label, Control } from "../../components/form";
 import Button from "../../components/button";
+import template from "./index.tem";
 import "./index.css";
 
 export default class Login extends Component {
   constructor(props) {
-    super({ ...props, Wrapper, Form, Button });
-  }
+    super({
+      ...props,
+      template,
+      Wrapper,
+      Button,
+      Form,
+      "Form.Header": Header,
+      "Form.Body": Body,
+      "Form.Footer": Footer,
+      "Form.Group": Group,
+      "Form.Label": Label,
+      "Form.Control": Control,
+      goToElementHref,
+    });
 
-  render() {
-    const [, setContext] = useContext;
-
-    console.log("Login");
-    const data = [1, 2, 3];
     const inputs = [
       {
-        id: "login",
+        name: "login",
         type: "text",
         placeholder: "ivanivanov",
         label: "Логин",
       },
       {
-        id: "password",
+        name: "password",
         type: "password",
         placeholder: "••••••••••••",
         label: "Пароль",
       },
     ];
 
-    
-
-    const inputsView = inputs.reduce(
-      (prev, { id, type, placeholder, label }) =>
-        `${prev}<Form.Group>
+    this.state.inputsView = inputs
+      .map(
+        ({ label, ...rest }) => `
+      <Form.Group>
         <Form.Label>${label}</Form.Label>
-        <Form.Control id="${id}" type="${type}" placeholder="${placeholder}"  />
-      </Form.Group>`,
-      ""
-    );
+        <Form.Control ${stringifyProps(rest)} />
+      </Form.Group>
+    `
+      )
+      .join("\n");
 
     const ninjaData = [
       {
@@ -47,33 +55,19 @@ export default class Login extends Component {
         href: "/chat",
         className: "login-form__apply-button",
         title: "Авторизоваться",
-        clickHandler: goToElementHref,
       },
       {
         variant: "link",
         href: "/register",
         className: "login-form__alternative-button",
         title: "Нет аккаунта?",
-        clickHandler: goToElementHref,
       },
     ];
 
-    const buttons = ninjaData.reduce((prev, props) => `${prev}<Button ${stringifyProps(props)}/>`, "");
+    this.state.buttons = ninjaData.map((data) => new Button(data));
+  }
 
-    return `
-      <Wrapper className = "login-form">
-        <Form>
-          <Form.Header>
-            Вход
-          </Form.Header>
-          <Form.Body>
-            ${inputsView}
-          </Form.Body>
-          <Form.Footer>
-            ${buttons}
-          </Form.Footer> 
-        </Form>
-      </Wrapper>
-    `;
+  render() {
+    return super.render();
   }
 }

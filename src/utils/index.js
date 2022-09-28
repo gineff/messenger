@@ -1,5 +1,6 @@
-const goToElementHref = (element) => {
-  const href = element.getAttributeNode("href").value;
+const goToElementHref = (event) => {
+  console.log(event.target);
+  const href = event.target.getAttributeNode("href").value;
   if (href !== undefined) window.location = href;
 };
 
@@ -10,6 +11,11 @@ const setContext = (el) => _context.push(el) - 1;
 const getContext = (i) => _context[i];
 
 const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
+
+let id = 1;
+
+// eslint-disable-next-line no-plusplus
+const nextId = () => id++;
 
 const wrapFunction = (f) => {
   const id = uid();
@@ -24,12 +30,7 @@ const stringifyProps = (props, keys = false) =>
       if ((keys && !keys.include(key)) || value === undefined) {
         return prev;
       }
-
-      if (typeof value === "string") {
-        return `${prev} ${key}="${value}"`;
-      }
-
-      return `${prev} ${key}={{${setContext(value)}}}`;
+      return `${prev} ${key}="${value}"`;
     }, "")
     .trim();
 
@@ -56,4 +57,4 @@ const emit = (key, payload) => {
 
 const useEventBus = [on, emit];
 
-export { wrapFunction, uid, goToElementHref, stringifyProps, useContext, useEventBus };
+export { wrapFunction, uid, nextId, goToElementHref, stringifyProps, useContext, useEventBus };

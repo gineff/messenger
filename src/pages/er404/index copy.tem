@@ -1,0 +1,25 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable react/function-component-definition */
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable react/jsx-filename-extension */
+
+import Wrapper from "../../components/wrapper";
+
+let data = "";
+
+function Example() {
+  const [count, setCount] = (()=> {return [data,(n)=> {data = n}]})()
+
+  const someFunction = () => setCount(count + 1)
+  
+  return (
+    <div>
+      <p>You clicked {{count}} times</p>
+      <Wrapper onClick={{someFunction}}>
+        Click me
+      </Wrapper>
+    </div>
+  );
+}
+
+export default Example;

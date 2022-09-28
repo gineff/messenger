@@ -165,41 +165,31 @@ export default class Component {
   render() {
     this._render();
     // this.container.forEach((element) => addEventHandler(element, this.state));
-
-    // дублирование на компоненте и див?
     return this.fragment;
   }
 
   _render() {
+    // 1. компиляция. замена блоков {{}} на примитивы или контекст
     const block = this._compile(this.template).replace(/\n|\s{2}/g, "");
+    // 2. Поиск и замена нодов компоентов на промежуточный нод <component id="1" /> в строке блока
     const [htmlTree, nestedComponents] = parseNestedComponents(block);
 
     console.log(nestedComponents);
+    // 3. Построение html дерева из строки блока
     const fragment = createElementFromString(htmlTree);
-
+    // 4. Замена элементов дерева на отрисованные компоненты. Таким образом сохраняем структуру шаблона
     Object.entries(nestedComponents).forEach(([id, component]) => {
       const fragmentElement = fragment.querySelector(`component[id="${id}"]`);
 
-      if (fragmentElement.childNodes.length > 0) {
-        component.state = { ...component.state, children: fragmentElement.childNodes };
+      // fragmentElement - это Элементы типа <component>
+      if (fragmentElement?.fragmentElement.length > 0) {
+        component.state = { ...component.state, children: [...fragmentElement.childNodes] };
       }
-      const componentFragment = wrapWithArray(component).reduce((container, comp) => {
-        try {
-          container.append(comp.render());
-        } catch (e) {
-          console.error(e, comp);
-        }
-        return container;
-      }, new DocumentFragment());
+      // где происходит вставка потомков? они в массивае nested
 
-      // createContextElement
-
-      fragmentElement.replaceWith(componentFragment);
-      // console.log(component.render());
-
-      // component.render()
+      // fragmentElement.replaceWith(component instanceof NodeList ? component : component.render());
     });
 
-    this.fragment = fragment;
+    this.fragment = fragment.cloneNode();
   }
 }

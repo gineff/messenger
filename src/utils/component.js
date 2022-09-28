@@ -1,11 +1,13 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
-import { useContext, nextId } from "./index";
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-useless-escape */
+import { useContext, nextId } from "./index";
+import Dom from "./dom";
+
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
 const re = /<([A-Z][A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/;
@@ -105,6 +107,7 @@ function createContextElement(context) {
   return nodes;
 }
 
+// !!!!!!!!!!
 function parseNestedComponents(block) {
   let match;
   const collection = {};
@@ -112,7 +115,7 @@ function parseNestedComponents(block) {
   while ((match = block.match(re))) {
     const [found, singleTag, singleTagProps, pairedTag, pairedTagProps, children, context] = match;
     const id = nextId();
-    block = block.replace(found, `<component id="${id}">${children || ""}</component>`);
+    block = block.replace(found, `<div component-id="${id}">${children || ""}</div>`);
 
     if (context) {
       collection[id] = getContext(context);
@@ -141,6 +144,8 @@ export default class Component {
     });
   }
 
+  isComponent = true;
+
   state = {};
 
   elements = [];
@@ -165,31 +170,48 @@ export default class Component {
   render() {
     this._render();
     // this.container.forEach((element) => addEventHandler(element, this.state));
-    return this.fragment;
+    return this.element;
   }
 
   _render() {
-    // 1. компиляция. замена блоков {{}} на примитивы или контекст
+    // 1. компиляция. замена в шаблоне блоков {{}} на примитивы или контекст
     const block = this._compile(this.template).replace(/\n|\s{2}/g, "");
-    // 2. Поиск и замена нодов компоентов на промежуточный нод <component id="1" /> в строке блока
+    // пример шаблона
+    // <div class="wrapper">{{children}}</div>
+    // Children получен от родителя (массив childNodes) через расширение свойства state
+    // Не примитивы храняться в контексте.
+    // пример шаблона (блок) после компиляции.
+    // <div class="wrapper">context:n</div>
+    // 2. Поиск и замена нодов компонентов на промежуточный нод <component id=m /> в строке блока
     const [htmlTree, nestedComponents] = parseNestedComponents(block);
+    // пример htmlTree
+    // <div class="wrapper"><component id="11"></component></div>
+    // все компоненты и context:n заменены на <components id=m></components>
+    // nestedComponents = коллекция найденных в шаблоне вложенных компонентов, сконструированных, но не отрисованных
+    // пример коллекции nestedComponents.
+    // {11: [<component id="12"><componen id="13"></component></component>}
+    // 3. fragment = documentFragment - это упрощенная модель компонента, полученная из строки htmlTree
+    const dom = new Dom(htmlTree);
+    // пример
+    // <div class="wrapper"><component id="11"></component></div>
+    // меняем <component id="11"></component> на компонент из коллекции nestedComponents
 
-    console.log(nestedComponents);
-    // 3. Построение html дерева из строки блока
-    const fragment = createElementFromString(htmlTree);
-    // 4. Замена элементов дерева на отрисованные компоненты. Таким образом сохраняем структуру шаблона
-    Object.entries(nestedComponents).forEach(([id, component]) => {
-      const fragmentElement = fragment.querySelector(`component[id="${id}"]`);
+    Object.entries(nestedComponents).forEach(([id, componentOrChildNode]) => {
+      const domElement = dom.querySelector(`[component-id="${id}"]`);
+      // если у найденного элемента fragmentElement есть потомки,
+      // то передаем их вложеному компоненту, чтобы он их отрисовал у себя
 
-      // fragmentElement - это Элементы типа <component>
-      if (fragmentElement?.fragmentElement.length > 0) {
-        component.state = { ...component.state, children: [...fragmentElement.childNodes] };
+      if (domElement.childNodes.length > 0) {
+        componentOrChildNode.state = { ...componentOrChildNode.state, children: [...domElement.childNodes] };
       }
-      // где происходит вставка потомков? они в массивае nested
 
-      // fragmentElement.replaceWith(component instanceof NodeList ? component : component.render());
+      if (componentOrChildNode.isComponent) {
+        domElement.replaceWith(componentOrChildNode.render());
+      } else {
+        domElement.replaceWith(...componentOrChildNode);
+      }
     });
 
-    this.fragment = fragment.cloneNode();
+    this.element = dom.getElement();
   }
 }

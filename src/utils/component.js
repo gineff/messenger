@@ -1,15 +1,15 @@
+/* eslint-disable no-loop-func */
 /* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
-import { useContext } from "./index";
+import { useContext, nextId } from "./index";
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-useless-escape */
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
-const re = /<([A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/g;
-const reGreed = /<([A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Za-z0-9._]+)([^>]*)>(.*)<\/\k<tag>\s?>|context:(\d+)/g;
-const reNotPureHtml = /<[A-Z][a-z0-9._]*|context:\d+/g;
+const re = /<([A-Z][A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?>/;
+
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|context:(\d+))|(\w+)/g;
 const components = new Map();
 
@@ -55,10 +55,10 @@ function parseProps(str) {
   return str ? parsePropsFromString(str) : null;
 }
 
-function createElement(str) {
+function createElementFromString(str) {
   const fragment = document.createElement("template");
   fragment.innerHTML = str;
-  return fragment.content.firstChild;
+  return fragment.content;
 }
 
 function addEventHandler(element, props) {
@@ -105,6 +105,22 @@ function createContextElement(context) {
   return nodes;
 }
 
+function parseNestedComponents(block) {
+  let match;
+  const collection = {};
+
+  while ((match = block.match(re))) {
+    const [found, singleTag, singleTagProps, pairedTag, pairedTagProps, children] = match;
+    const props = parseProps(singleTagProps || pairedTagProps);
+    const id = nextId();
+
+    block = block.replace(found, `<component id="${id}">${children || ""}</component>`);
+    collection[id] = new (components.get(singleTag || pairedTag))({ ...props });
+  }
+
+  return [block, collection];
+}
+
 // *********************Component***************************
 
 export default class Component {
@@ -136,58 +152,37 @@ export default class Component {
 
       if (value === undefined) return "";
       if (isPrimitive(value)) return value;
-
+      // children = str
       return `context:${setContext(value)}`;
     });
   }
 
   render() {
     this._render();
-    this.container.forEach((element) => addEventHandler(element, this.state));
+    // this.container.forEach((element) => addEventHandler(element, this.state));
 
     // дублирование на компоненте и див?
-    return this.container;
+    return this;
   }
 
   _render() {
-    this.block = this._compile(this.template).replace(/\n|\s{2}/g, "");
-    this.container = [];
-    // container for html elements
-    let element;
-    console.log(this.state.sequence, this);
-    const matches = Array.from(this.block.matchAll(this.state.sequence ? re : reGreed));
-    // if component props (this.state) has sequence attr, then component has siblings children,
-    // and matches.length > 1.
-    // if (this.constructor.name === "Body")
+    const block = this._compile(this.template).replace(/\n|\s{2}/g, "");
+    const [htmlTree, nestedComponents] = parseNestedComponents(block);
 
-    matches.forEach((match) => {
-      const [all, singleTag, singleTagProps, pairedTag, pairedTagProps, children, context] = match;
-      const tag = singleTag || pairedTag;
-      const props = parseProps(singleTagProps || pairedTagProps);
+    const fragment = createElementFromString(htmlTree);
 
-      if (components.has(tag)) {
-        // if: Form.Header
-        element = new (components.get(tag))({ ...props, children }).render();
-      } else if (context) {
-        // context:id
-        element = createContextElement(context);
-      } else {
-        // if: simple html node, like div. This element = block - children
-        
-        element = createElement(all.replace(children, ""));
+    Object.entries(nestedComponents).forEach(([id, component]) => {
+      const fragmentElement = fragment.querySelector(`component[id="${id}"]`);
 
-        if (children) {
-          const childContainer = new Component({ ...props, template: children }).render();
-          element.append(...childContainer);
-        }
+      if (fragmentElement.childNodes.length > 0) {
+        component.state = { ...component.state, children: fragmentElement.childNodes };
       }
 
-      this.container.push(...wrapToArray(element));
+      console.log(component.render());
+
+      // component.render()
     });
 
-    // the rest of match is textNode
-    if (matches.length === 0 && this.block.length > 0) {
-      this.container.push(document.createTextNode(this.block));
-    }
+    this.fragment = fragment;
   }
 }

@@ -68,7 +68,6 @@ export default class Login extends Component {
   }
 
   render() {
-    console.log(this.state);
     return super.render();
   }
 }

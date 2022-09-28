@@ -9,3 +9,22 @@
     <Form.Footer onClick={{goToElementHref}}>{{buttons}}</Form.Footer>
   </Form>
 </Wrapper>
+
+
+
+<embed id="1">
+	<embed id="2">
+		<embed id="3">Вход</embed>
+		<embed id="4">
+			<embed id="5">
+				<embed id="6">Логин</embed>
+				<embed id="7">undefined</embed>
+			</embed>
+			<embed id="8">
+				<embed id="9">Пароль</embed>
+				<embed id="10">undefined</embed>
+			</embed>
+		</embed>
+		<embed id="11">context:1</embed>
+	</embed>
+</embed>

@@ -17,3 +17,6 @@ if (components.has(tag)) {
   const child = new Component({ ...props, template: children }).render();
   element.append(...child);
 }
+
+
+const [all, singleTag, ]

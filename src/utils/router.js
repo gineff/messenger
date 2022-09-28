@@ -15,7 +15,7 @@ function render(Comp) {
   const root = document.getElementById("root");
   root.innerHTML = "";
   const result = component.render();
-  root.append(...result);
+  root.append(result);
 }
 
 export default function route() {

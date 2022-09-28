@@ -1,3 +1,4 @@
+/* eslint-disable no-lonely-if */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
@@ -182,33 +183,38 @@ export default class Component {
     // Не примитивы храняться в контексте.
     // пример шаблона (блок) после компиляции.
     // <div class="wrapper">context:n</div>
-    // 2. Поиск и замена нодов компонентов на промежуточный нод <component id=m /> в строке блока
+    // 2. Поиск и замена нодов компонентов на промежуточный нод <div component-id=m /> в строке блока
     const [htmlTree, nestedComponents] = parseNestedComponents(block);
     // пример htmlTree
-    // <div class="wrapper"><component id="11"></component></div>
-    // все компоненты и context:n заменены на <components id=m></components>
+    // <div class="wrapper"><div component-id="11"></div></div>
+    // все компоненты и context:n заменены на <div component-id=m></div>
     // nestedComponents = коллекция найденных в шаблоне вложенных компонентов, сконструированных, но не отрисованных
     // пример коллекции nestedComponents.
-    // {11: [<component id="12"><componen id="13"></component></component>}
-    // 3. fragment = documentFragment - это упрощенная модель компонента, полученная из строки htmlTree
+    // {11: [<div component-id="12"><div component-id="13"></div></div>}
+    // 3. dom - это упрощенная модель компонента, полученная из строки htmlTree
     const dom = new Dom(htmlTree);
     // пример
-    // <div class="wrapper"><component id="11"></component></div>
-    // меняем <component id="11"></component> на компонент из коллекции nestedComponents
+    // <div class="wrapper"><div component-id="11"></component></div>
+    // меняем <div component-id="11"></div> на компонент из коллекции nestedComponents
 
     Object.entries(nestedComponents).forEach(([id, componentOrChildNode]) => {
       const domElement = dom.querySelector(`[component-id="${id}"]`);
-      // если у найденного элемента fragmentElement есть потомки,
+      // если у найденного элемента domElement есть потомки,
       // то передаем их вложеному компоненту, чтобы он их отрисовал у себя
 
       if (domElement.childNodes.length > 0) {
         componentOrChildNode.state = { ...componentOrChildNode.state, children: [...domElement.childNodes] };
       }
 
+      console.log("componentOrChildNode", componentOrChildNode);
       if (componentOrChildNode.isComponent) {
         domElement.replaceWith(componentOrChildNode.render());
       } else {
-        domElement.replaceWith(...componentOrChildNode);
+        if (componentOrChildNode[0].isComponent) {
+          domElement.replaceWith(...componentOrChildNode.map((comp) => comp.render()));
+        } else {
+          domElement.replaceWith(...componentOrChildNode);
+        }
       }
     });
 

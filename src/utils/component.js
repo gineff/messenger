@@ -58,12 +58,6 @@ function parseProps(str) {
   return str ? parsePropsFromString(str) : null;
 }
 
-function createElementFromString(str) {
-  const fragment = document.createElement("template");
-  fragment.innerHTML = str;
-  return fragment.content;
-}
-
 function addEventHandler(element, props) {
   Object.entries(props).forEach(([key, handler]) => {
     if (typeof handler !== "function") return;
@@ -80,35 +74,10 @@ function isComponent(element) {
   return Object.getPrototypeOf(element) === Component;
 }
 
-function isComponentInstance(element) {
-  // eslint-disable-next-line no-use-before-define
-  return element instanceof Component || element[0] instanceof Component;
-}
-
 function isPrimitive(element) {
   return Object(element) !== element;
 }
 
-function wrapWithArray(element) {
-  return Array.isArray(element) ? element : [element];
-}
-
-function createContextElement(context) {
-  let nodes;
-  const contextValue = getContext(context);
-  if (isComponentInstance(contextValue)) {
-    const comps = wrapWithArray(contextValue);
-    nodes = comps.reduce((arr, component) => {
-      arr.push(...component.render());
-      return arr;
-    }, []);
-  } else {
-    nodes = wrapWithArray(document.createTextNode(contextValue));
-  }
-  return nodes;
-}
-
-// !!!!!!!!!!
 function parseNestedComponents(block) {
   let match;
   const collection = {};
@@ -149,8 +118,6 @@ export default class Component {
 
   state = {};
 
-  elements = [];
-
   setState(key, value) {
     this.state[key] = value;
   }
@@ -170,39 +137,20 @@ export default class Component {
 
   render() {
     this._render();
-    // this.container.forEach((element) => addEventHandler(element, this.state));
     addEventHandler(this.element, this.state);
     return this.element;
   }
 
   _render() {
-    // 1. компиляция. замена в шаблоне блоков {{}} на примитивы или контекст
     const block = this._compile(this.template).replace(/\n|\s{2}/g, "");
     this.block = block;
-    // пример шаблона
-    // <div class="wrapper">{{children}}</div>
-    // Children получен от родителя (массив childNodes) через расширение свойства state
-    // Не примитивы храняться в контексте.
-    // пример шаблона (блок) после компиляции.
-    // <div class="wrapper">context:n</div>
-    // 2. Поиск и замена нодов компонентов на промежуточный нод <div component-id=m /> в строке блока
+
     const [htmlTree, nestedComponents] = parseNestedComponents(block);
-    // пример htmlTree
-    // <div class="wrapper"><div component-id="11"></div></div>
-    // все компоненты и context:n заменены на <div component-id=m></div>
-    // nestedComponents = коллекция найденных в шаблоне вложенных компонентов, сконструированных, но не отрисованных
-    // пример коллекции nestedComponents.
-    // {11: [<div component-id="12"><div component-id="13"></div></div>}
-    // 3. dom - это упрощенная модель компонента, полученная из строки htmlTree
+
     const dom = new Dom(htmlTree);
-    // пример
-    // <div class="wrapper"><div component-id="11"></component></div>
-    // меняем <div component-id="11"></div> на компонент из коллекции nestedComponents
 
     Object.entries(nestedComponents).forEach(([id, componentOrChildNode]) => {
       const domElement = dom.querySelector(`[component-id="${id}"]`);
-      // если у найденного элемента domElement есть потомки,
-      // то передаем их вложеному компоненту, чтобы он их отрисовал у себя
 
       if (domElement.childNodes.length > 0) {
         componentOrChildNode.state = { ...componentOrChildNode.state, children: [...domElement.childNodes] };
@@ -219,6 +167,10 @@ export default class Component {
       }
     });
 
-    this.element = dom.getElement();
+    if (this.element) {
+      this.element.replaceWith(dom.getElement());
+    } else {
+      this.element = dom.getElement();
+    }
   }
 }

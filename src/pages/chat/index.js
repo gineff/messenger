@@ -9,7 +9,7 @@ import chats from "../../../static/json/chats.json";
 import template from "./index.tem";
 import "./index.css";
 
-const [on, emit] = useEventBus;
+const [, emit] = useEventBus;
 // const [, setContext] = useContext;
 
 export default class ChatPage extends Component {
@@ -36,13 +36,13 @@ export default class ChatPage extends Component {
   }
 
   render() {
+    
     const ChatItemSelected = (event) => {
       const { target } = event;
       const chatItemSelected = target.closest(".chat-item");
       const id = +chatItemSelected.getAttribute("chat-id");
       const chat = chats.find((el) => el.id === id);
-
-
+      
       emit("ChatItemSelected", chat);
     };
 
@@ -50,16 +50,3 @@ export default class ChatPage extends Component {
     return super.render();
   }
 }
-
-/*
-const { className, chat } = this.state;
-
-on("onSearchSubmit", (chatName) => {
-  console.log(chatName);
-});
-
-on("chatSelect", (chat) => {
-  this.state = { ...this.state, chat };
-  this.renderSelf();
-});
-*/

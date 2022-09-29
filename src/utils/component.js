@@ -16,6 +16,11 @@ const re = /<([A-Z][A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]+)([^>]*)
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|context:(\d+))|(\w+)/g;
 const components = new Map();
 
+const eventMap = {
+  onClick: "click",
+  onBlur: "blur",
+};
+
 const [getContext, setContext] = useContext;
 
 function getValue(path, obj) {
@@ -53,6 +58,17 @@ function parseProps(str) {
   return str ? parsePropsFromString(str) : null;
 }
 
+function addEventHandler(element, props) {
+  Object.entries(props).forEach(([key, handler]) => {
+    if (typeof handler !== "function") return;
+
+    const eventName = eventMap[key];
+    if (eventName) {
+      element.addEventListener(eventName, handler, { capture: true });
+    }
+  });
+}
+
 function isComponent(element) {
   // eslint-disable-next-line no-use-before-define
   return Object.getPrototypeOf(element) === Component;
@@ -82,29 +98,19 @@ function parseNestedComponents(block) {
 
   return [block, collection];
 }
-const eventsMap = new Map([
-  ["onClick", "click"],
-  ["onBlur", "blur"],
-  ["onChange", "change"],
-]);
 
 // *********************Component***************************
 
 export default class Component {
-  constructor(props) {
-    const { className, children, tag, template } = props;
+  constructor({ template, tag, ...rest }) {
+    this.template = template || `<${tag}>{{${rest?.children}}}</${tag}>`;
+    this.element = document.createElement("div");
 
-    this.template = template || `<${tag} class=${className || ""}>{{${children}}}</${tag}>`;
-
-    this.events = new Map();
-
-    Object.entries(props).forEach(([key, value]) => {
+    Object.entries(rest).forEach(([key, value]) => {
       if (value && isComponent(value)) {
         components.set(key, value);
-      } else if (eventsMap.has(key)) {
-        this.events.set(eventsMap.get(key), value);
       } else {
-        this.setState(key, value);
+        this.setState(key, typeof value === "function" ? value.bind(this) : value);
       }
     });
   }
@@ -118,19 +124,23 @@ export default class Component {
   }
 
   _compile(template) {
+    if (!template) console.error(this.constructor.name, " отсутствует шаблон");
+
     return template.replace(/\{\{([A-Za-z0-9._-]+)\}\}/g, (match, key) => {
       const value = getValue(key, this.state);
 
       if (value === undefined) return "";
       if (isPrimitive(value)) return value;
+      // children = str
       return `context:${setContext(value)}`;
     });
   }
 
   render() {
-    this.removeEventHandler();
-    this._render();
-    this.addEventHandler();
+    const newElement = this._render();
+    this.element.replaceWith(newElement);
+    this.element = newElement;
+    addEventHandler(this.element, this.state);
     return this.element;
   }
 
@@ -160,22 +170,12 @@ export default class Component {
       }
     });
 
+    return dom.getElement();
+    /*
     if (this.element) {
       this.element.replaceWith(dom.getElement());
     } else {
       this.element = dom.getElement();
-    }
-  }
-
-  addEventHandler() {
-    this.events.forEach((handler, key) => {
-      this.element.addEventListener(key, handler, { capture: true });
-    });
-  }
-
-  removeEventHandler() {
-    this.events.forEach((handler, key) => {
-      this?.element?.removeEventListener(key, handler);
-    });
+    } */
   }
 }

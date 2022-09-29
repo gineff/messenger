@@ -27,16 +27,20 @@ function getValue(path, obj) {
   const keys = path.trim().split(".");
   let result = obj;
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const key of keys) {
-    const match = key.match(/^(\w+)\[(\d+)\]$/);
-    if (match) {
-      result = result[match[1]][match[2]];
-    } else {
-      result = result[key];
+  try {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key of keys) {
+      const match = key.match(/^(\w+)\[(\d+)\]$/);
+      if (match) {
+        result = result[match[1]][match[2]];
+      } else {
+        result = result[key];
+      }
     }
+    return result;
+  } catch (e) {
+    return "";
   }
-  return result;
 }
 
 function parsePropsFromString(str) {

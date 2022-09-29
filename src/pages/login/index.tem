@@ -6,6 +6,6 @@
     <Form.Body>
       {{inputsView}}
     </Form.Body>
-    <Form.Footer>{{buttons}}</Form.Footer>
+    <Form.Footer onClick={{goToElementHref}}>{{buttons}}</Form.Footer>
   </Form>
 </Wrapper>

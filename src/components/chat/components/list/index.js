@@ -12,9 +12,11 @@ export default class List extends Component {
     const { chats, chat } = this.state;
     const { id } = chat ?? {};
 
-    this.state.messages = chats
+    const messages = chats
       ? chats.map((chat) => new Item({ chat, active: chat.id === id, className: "chat__item " }))
       : "";
+
+    this.state = { ...this.state, messages };
     return super.render();
   }
 }

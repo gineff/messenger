@@ -5,7 +5,7 @@
       <Chat.SearchForm onSubmit={{searchChat}} />
     </Sidebar.Header>
     <Sidebar.Body>
-      <Chat.List chats={{chats}} />
+      <Chat.List chats={{chats}} onClick={{ChatItemSelected}} />
     </Sidebar.Body>
   </Sidebar>
   <Main>

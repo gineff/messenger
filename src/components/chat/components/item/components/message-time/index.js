@@ -1,9 +1,6 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
-import Component from "../../../../utils/component";
-import Avatar from "../avatar";
-import UnreadCount from "./components/unread-count";
-import MessageTime from "./components/message-time";
+import Component from "../../../../../../utils/component";
+
 import template from "./index.tem";
 import "./index.css";
 
@@ -16,12 +13,24 @@ const getFormatedDate = (date) =>
 const today = new Date();
 const todayStr = today.toISOString().slice(0, 10);
 
-export default class Item extends Component {
+export default class MessageTime extends Component {
   constructor(props) {
-    super({ ...props, template, "Chat.Avatar": Avatar, UnreadCount, MessageTime });
+    super({ ...props, template });
   }
 
   render() {
+    const { time } = this.state;
+    const date = new Date(time);
+    const isToday = time.slice(0, 10) === todayStr;
+    const isThisWeek = (today - date) / (1000 * 60 * 60 * 24) < 7 && today.getDay() > (date.getDay() || 7);
+
+    const formattedTime = (() => {
+      if (isToday) return time.slice(11, 16);
+      if (isThisWeek) return getWeekDay(date);
+      return getFormatedDate(date);
+    })();
+
+    this.state = { ...this.state, formattedTime };
     return super.render();
   }
 }

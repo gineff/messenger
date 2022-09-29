@@ -11,20 +11,20 @@
 </Wrapper>
 
 
+"<div data-id="131" class="chat-item chat__item ">
+  <Chat.Avatar className="chat-item__avatar" image="/125/avatar1.jpg" />
+  <div class="chat-item__last-message-detials"><div class="row1">
+    <div class="chat-item__title">Стас Рогозин</div>
+    <div class="chat-item__last-message-time">12 Апр 2020</div>
+    </div>
+    <div class="row2">
+      <div class="chat-item__last-message-content">Можно или сегодня или завтра</div>
+      <UnreadCount unreadCount=0">
+        
+      </UnreadCount></div></div></div>"
 
-<embed id="1">
-	<embed id="2">
-		<embed id="3">Вход</embed>
-		<embed id="4">
-			<embed id="5">
-				<embed id="6">Логин</embed>
-				<embed id="7">undefined</embed>
-			</embed>
-			<embed id="8">
-				<embed id="9">Пароль</embed>
-				<embed id="10">undefined</embed>
-			</embed>
-		</embed>
-		<embed id="11">context:1</embed>
-	</embed>
-</embed>
+
+"<div data-id="128" class="chat-item chat__item "><Chat.Avatar className="chat-item__avatar" image="/125/avatar1.jpg" />
+<div class="chat-item__last-message-detials"><div class="row1"><div class="chat-item__title">1,2,3</div>
+<MessageTime time="{{chat?.time?.last_message}}" /></div><div class="row2">
+  <div class="chat-item__last-message-content">Миллионы россиян еежедневно проводят десятки часов свое...</div><UnreadCount unreadCount="0" /></div></div></div>"

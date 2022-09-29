@@ -171,12 +171,14 @@ export default class Component {
   render() {
     this._render();
     // this.container.forEach((element) => addEventHandler(element, this.state));
+    addEventHandler(this.element, this.state);
     return this.element;
   }
 
   _render() {
     // 1. компиляция. замена в шаблоне блоков {{}} на примитивы или контекст
     const block = this._compile(this.template).replace(/\n|\s{2}/g, "");
+    this.block = block;
     // пример шаблона
     // <div class="wrapper">{{children}}</div>
     // Children получен от родителя (массив childNodes) через расширение свойства state
@@ -206,7 +208,6 @@ export default class Component {
         componentOrChildNode.state = { ...componentOrChildNode.state, children: [...domElement.childNodes] };
       }
 
-      console.log("componentOrChildNode", componentOrChildNode);
       if (componentOrChildNode.isComponent) {
         domElement.replaceWith(componentOrChildNode.render());
       } else {

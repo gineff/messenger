@@ -21,7 +21,6 @@ const eventMap = {
   onBlur: "blur",
 };
 
-
 function getValue(path, obj) {
   const keys = path.trim().split(".");
   let result = obj;
@@ -159,7 +158,7 @@ export default class Component {
       if (componentOrChildNode.isComponent) {
         domElement.replaceWith(componentOrChildNode.render());
       } else {
-        if (componentOrChildNode[0].isComponent) {
+        if (componentOrChildNode[0] && componentOrChildNode[0].isComponent) {
           domElement.replaceWith(...componentOrChildNode.map((comp) => comp.render()));
         } else {
           domElement.replaceWith(...componentOrChildNode);

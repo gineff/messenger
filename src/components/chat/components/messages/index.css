@@ -1,6 +1,14 @@
 .chat__messages {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 100%;
+  padding: 15px 0;
+  &-preloader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    &.hidden {
+      display: none;
+    }
+  }
 }

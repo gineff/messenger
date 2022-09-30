@@ -1,9 +1,32 @@
-.chat__message .message {
+.chat__message {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 402px;
+  width: 100%;
   border-radius: 8px;
   color: #f8f8f8;
-  padding: 10px;
 }
+
+.message {
+  &__content-wrapper {
+    width: 402px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  &__content {
+    color: #1e1e1e;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    white-space: pre-wrap;
+  }
+
+
+  :first-child::before{
+    content: attr(date);
+  }
+}
+
+
+

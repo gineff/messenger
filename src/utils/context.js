@@ -3,12 +3,16 @@
 /* eslint-disable react/prefer-stateless-function */
 import Component from "./component";
 
-
-const useContext = () => "_context[i]";
+const useContext = (provider) => provider.state;
 
 export { useContext };
 
 const Provider = class Provider extends Component {
+  constructor(props) {
+    super(props);
+    Provider.state = { ...Provider.state, ...props };
+  }
+
   render() {
     const newElement = this._render().firstChild;
     this.element.replaceWith(newElement);

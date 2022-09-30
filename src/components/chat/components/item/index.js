@@ -1,7 +1,7 @@
 import Component from "../../../../utils/component";
 import Avatar from "../avatar";
 import UnreadCount from "./components/unread-count";
-import MessageTime from "../message/components/message-time";
+import MessageTime from "../../../date";
 import template from "./index.tem";
 import "./index.css";
 

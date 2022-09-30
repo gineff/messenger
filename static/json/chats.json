@@ -1,162 +1,88 @@
 [
   {
-    "id": 123,
-    "title": "my-chat",
+    "id": 1,
+    "title": "Андрей",
     "avatar": "/123/avatar1.jpg",
     "unread_count": 2,
     "last_message": {
-      "user": {
-        "first_name": "Андрей",
-        "second_name": "Пупкин",
-        "avatar": "/path/to/avatar.jpg",
-        "email": "my@email.com",
-        "login": "userLogin",
-        "phone": "8(911)-222-33-22"
-      },
+      "user": 128,
       "time": "2022-09-22T09:49:22.000Z",
       "content": "Изображение"
     }
   },
   {
-    "id": 124,
+    "id": 2,
     "title": "Киноклуб",
     "avatar": "/124/avatar1.jpg",
     "unread_count": 0,
     "last_message": {
-      "user": {
-        "first_name": "Андрей",
-        "second_name": "Чеснов",
-        "avatar": "/path/to/avatar.jpg",
-        "email": "my@email.com",
-        "login": "gineff",
-        "phone": "8(911)-222-33-22"
-      },
+      "user": 1,
       "time": "2022-09-21T12:00:00.000Z",
       "content": "стикер"
     }
   },
   {
-    "id": 125,
+    "id": 3,
     "title": "Илья",
     "avatar": "/125/avatar1.jpg",
     "unread_count": 4,
     "last_message": {
-      "user": {
-        "first_name": "Илья",
-        "second_name": "Pupkin",
-        "avatar": "/path/to/avatar.jpg",
-        "email": "my@email.com",
-        "login": "userLogin",
-        "phone": "8(911)-222-33-22"
-      },
+      "user": 125,
       "time": "2022-09-21T15:12:00.000Z",
       "content": "Друзья, у меня для вас особенный выпуск новостей!.."
     }
   },
   {
-    "id": 126,
+    "id": 4,
     "title": "Вадим",
     "avatar": "/125/avatar1.jpg",
     "unread_count": 0,
     "last_message": {
-      "user": {
-        "first_name": "Андрей",
-        "second_name": "Чеснов",
-        "avatar": "/path/to/avatar.jpg",
-        "email": "my@email.com",
-        "login": "gineff",
-        "phone": "8(911)-222-33-22"
-      },
+      "user": 1,
       "time": "2022-09-20T12:00:00.000Z",
       "content": "Круто!"
     }
   },
   {
-    "id": 127,
+    "id": 5,
     "title": "тет-а-теты",
     "avatar": "/125/avatar1.jpg",
     "unread_count": 0,
     "last_message": {
-      "user": {
-        "first_name": "Илья",
-        "second_name": "Pupkin",
-        "avatar": "/path/to/avatar.jpg",
-        "email": "my@email.com",
-        "login": "userLogin",
-        "phone": "8(911)-222-33-22"
-      },
+      "user": 128,
       "time": "2022-09-19T12:00:00.000Z",
       "content": "И Human Interface Guidlines и Material Design рекомендуют..."
     }
   },
   {
-    "id": 128,
-    "title": "1,2,3",
-    "avatar": "/125/avatar1.jpg",
-    "unread_count": 0,
-    "last_message": {
-      "user": {
-        "first_name": "Илья",
-        "second_name": "Pupkin",
-        "avatar": "/path/to/avatar.jpg",
-        "email": "my@email.com",
-        "login": "userLogin",
-        "phone": "8(911)-222-33-22"
-      },
-      "time": "2022-09-19T12:00:00.000Z",
-      "content": "Миллионы россиян еежедневно проводят десятки часов свое..."
-    }
-  },
-  {
-    "id": 129,
+    "id": 6,
     "title": "Design Destryer",
     "avatar": "/125/avatar1.jpg",
     "unread_count": 0,
     "last_message": {
-      "user": {
-        "first_name": "Илья",
-        "second_name": "Pupkin",
-        "avatar": "/path/to/avatar.jpg",
-        "email": "my@email.com",
-        "login": "userLogin",
-        "phone": "8(911)-222-33-22"
-      },
+      "user": 128,
       "time": "2022-09-18T12:00:00.000Z",
       "content": "В 2008 году худоник John Rafman начал собирать..."
     }
   },
   {
-    "id": 130,
+    "id": 7,
     "title": "Day.",
     "avatar": "/125/avatar1.jpg",
     "unread_count": 0,
     "last_message": {
-      "user": {
-        "first_name": "Day.",
-        "second_name": "Pupkin",
-        "avatar": "/path/to/avatar.jpg",
-        "email": "my@email.com",
-        "login": "userLogin",
-        "phone": "8(911)-222-33-22"
-      },
+      "user": 1,
       "time": "2020-05-01T12:00:00.000Z",
       "content": "Так увлекся работой по курсу, что совсем забыл его анонсир..."
     }
   },
   {
-    "id": 131,
+    "id": 8,
     "title": "Стас Рогозин",
     "avatar": "/125/avatar1.jpg",
     "unread_count": 0,
     "last_message": {
-      "user": {
-        "first_name": "Стас",
-        "second_name": "Рогозин",
-        "avatar": "/path/to/avatar.jpg",
-        "email": "my@email.com",
-        "login": "userLogin",
-        "phone": "8(911)-222-33-22"
-      },
+      "user": 127,
       "time": "2020-04-12T12:00:00.000Z",
       "content": "Можно или сегодня или завтра"
     }

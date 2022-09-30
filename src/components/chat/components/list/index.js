@@ -25,7 +25,6 @@ export default class List extends Component {
 
     this.state = { ...this.state, list, id: uid() };
 
-    console.log(this);
     return super.render();
   }
 }

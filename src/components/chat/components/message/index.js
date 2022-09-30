@@ -1,5 +1,5 @@
 import Component from "../../../../utils/component";
-import MessageTime from "./components/message-time";
+import MessageTime from "../../../date";
 import template from "./index.tem";
 import "./index.css";
 
@@ -9,6 +9,8 @@ export default class Message extends Component {
   }
 
   render() {
+    const { content } = this.state;
+    this.state = { ...this.state, content: content.replace(/\n/g, "<br>") };
     return super.render();
   }
 }

@@ -34,7 +34,6 @@ const stringifyProps = (props, keys = false) =>
     }, "")
     .trim();
 
-
 const eventMap = new Map();
 
 const on = (key, cb) => {

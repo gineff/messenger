@@ -1,4 +1,6 @@
-<div class="chat__message message">
-  <div class="message__content">{{message.content}}</div>
-  <MessageTime time="{{message.date}}""/>
+<div class="chat__message message" date="{{date}}">
+  <div class="message__content-wrapper">
+    <p class="message__content">{{content}}</p>
+  </div>
+    <MessageTime time="{{date}}""/>
 </div>

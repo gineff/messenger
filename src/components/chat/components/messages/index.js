@@ -1,6 +1,8 @@
 import Component from "../../../../utils/component";
 import fetchData from "../../../../utils/fetchData";
 import { useEventBus } from "../../../../utils";
+// import { useContext } from "../../../../utils/context";
+// import { User } from "../../../../utils/user";
 import template from "./index.tem";
 import Message from "../message";
 import "./index.css";
@@ -10,6 +12,7 @@ export default class Messages extends Component {
   constructor(props) {
     super({ ...props, template, Message });
 
+    // const user = useContext(User);
     on("ChatItemSelected", (chat) => {
       const { id } = chat;
       fetchData(`/chats/${id}`, { method: "GET" }).then((messages) => {

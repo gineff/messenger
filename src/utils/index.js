@@ -34,7 +34,6 @@ const stringifyProps = (props, keys = false) =>
     }, "")
     .trim();
 
-const useContext = [getContext, setContext];
 
 const eventMap = new Map();
 
@@ -57,4 +56,4 @@ const emit = (key, payload) => {
 
 const useEventBus = [on, emit];
 
-export { wrapFunction, uid, nextId, goToElementHref, stringifyProps, useContext, useEventBus };
+export { wrapFunction, uid, nextId, goToElementHref, stringifyProps, getContext, setContext, useEventBus };

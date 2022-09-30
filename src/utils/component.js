@@ -6,7 +6,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-useless-escape */
-import { useContext, nextId } from "./index";
+import { getContext, setContext, nextId } from "./index";
 import Dom from "./dom";
 
 //              1           2                3         4                5
@@ -21,7 +21,6 @@ const eventMap = {
   onBlur: "blur",
 };
 
-const [getContext, setContext] = useContext;
 
 function getValue(path, obj) {
   const keys = path.trim().split(".");
@@ -62,17 +61,6 @@ function parseProps(str) {
   return str ? parsePropsFromString(str) : null;
 }
 
-function addEventHandler(element, props) {
-  Object.entries(props).forEach(([key, handler]) => {
-    if (typeof handler !== "function") return;
-
-    const eventName = eventMap[key];
-    if (eventName) {
-      element.addEventListener(eventName, handler, { capture: true });
-    }
-  });
-}
-
 function isComponent(element) {
   // eslint-disable-next-line no-use-before-define
   return Object.getPrototypeOf(element) === Component;
@@ -100,7 +88,7 @@ function parseNestedComponents(block) {
         collection[id] = new (components.get(singleTag || pairedTag))({ ...props });
       } catch (e) {
         console.log(e);
-        console.error(singleTag || pairedTag);
+        console.error(singleTag || pairedTag, components, "-------", components.get(singleTag || pairedTag));
       }
     }
   }
@@ -112,7 +100,7 @@ function parseNestedComponents(block) {
 
 export default class Component {
   constructor({ template, tag, ...rest }) {
-    this.template = template || `<${tag}>{{${rest?.children}}}</${tag}>`;
+    this.template = template || "<div>{{children}}</div>";
     this.element = document.createElement("div");
 
     Object.entries(rest).forEach(([key, value]) => {
@@ -149,7 +137,7 @@ export default class Component {
     const newElement = this._render();
     this.element.replaceWith(newElement);
     this.element = newElement;
-    addEventHandler(this.element, this.state);
+    this.addEventHandler(this.element, this.state);
     return this.element;
   }
 
@@ -180,11 +168,17 @@ export default class Component {
     });
 
     return dom.getElement();
-    /*
-    if (this.element) {
-      this.element.replaceWith(dom.getElement());
-    } else {
-      this.element = dom.getElement();
-    } */
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  addEventHandler(element, props) {
+    Object.entries(props).forEach(([key, handler]) => {
+      if (typeof handler !== "function") return;
+
+      const eventName = eventMap[key];
+      if (eventName) {
+        element.addEventListener(eventName, handler, { capture: true });
+      }
+    });
   }
 }

@@ -5,7 +5,7 @@ import "./index.css";
 
 export default class Wrapper extends Component {
   constructor(props) {
-    // super({ ...props, template, "UserContext.Provider" : UserContext });
-    super({ ...props, template });
+    super({ ...props, template, "UserContext.Provider": UserContext });
+    // super({ ...props, template });
   }
 }

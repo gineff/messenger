@@ -3,6 +3,11 @@
 /* eslint-disable react/prefer-stateless-function */
 import Component from "./component";
 
+
+const useContext = () => "_context[i]";
+
+export { useContext };
+
 const Provider = class Provider extends Component {
   render() {
     const newElement = this._render().firstChild;

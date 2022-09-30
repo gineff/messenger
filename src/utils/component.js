@@ -96,7 +96,12 @@ function parseNestedComponents(block) {
       // компонент или массив компонентов
     } else {
       const props = parseProps(singleTagProps || pairedTagProps);
-      collection[id] = new (components.get(singleTag || pairedTag))({ ...props });
+      try {
+        collection[id] = new (components.get(singleTag || pairedTag))({ ...props });
+      } catch (e) {
+        console.log(e);
+        console.error(singleTag || pairedTag);
+      }
     }
   }
 

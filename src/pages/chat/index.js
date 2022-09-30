@@ -1,5 +1,5 @@
 import Component from "../../utils/component";
-import { goToElementHref, useContext, useEventBus } from "../../utils";
+import { goToElementHref, useEventBus } from "../../utils";
 import Wrapper from "../../components/wrapper";
 import Sidebar, { Header, Body } from "../../components/sidebar";
 import Main from "../../components/main";
@@ -10,7 +10,6 @@ import template from "./index.tem";
 import "./index.css";
 
 const [, emit] = useEventBus;
-// const [, setContext] = useContext;
 
 export default class ChatPage extends Component {
   constructor(props) {

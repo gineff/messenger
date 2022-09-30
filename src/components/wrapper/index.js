@@ -1,5 +1,5 @@
 import Component from "../../utils/component";
-// import UserContext from "../../utils/user";
+import UserContext from "../../utils/user";
 import template from "./index.tem";
 import "./index.css";
 

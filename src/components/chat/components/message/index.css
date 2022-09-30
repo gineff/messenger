@@ -1,0 +1,9 @@
+.chat__message .message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 402px;
+  border-radius: 8px;
+  color: #f8f8f8;
+  padding: 10px;
+}

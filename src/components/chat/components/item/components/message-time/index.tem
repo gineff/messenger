@@ -1,1 +1,0 @@
-<div class="chat-item__message-time">{{formattedTime}}</div>

@@ -3,7 +3,7 @@
   <div class="chat-item__last-message-detials">
     <div class="row1">
       <div class="chat-item__title">{{chat.title}}</div>
-      <MessageTime time="{{chat.last_message.time}}" />
+      <MessageTime className="chat-item__message-time" time="{{chat.last_message.time}}" />
     </div>
     <div class="row2">
       <div class="chat-item__last-message-content">{{chat.last_message.content}}</div>

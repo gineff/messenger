@@ -4,7 +4,7 @@ import Item from "../item";
 import template from "./index.tem";
 import "./index.css";
 
-const [on, emit] = useEventBus;
+const [on] = useEventBus;
 export default class List extends Component {
   constructor(props) {
     super({ ...props, template, "Chat.Item": Item });

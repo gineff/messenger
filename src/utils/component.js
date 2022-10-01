@@ -1,3 +1,4 @@
+/* eslint-disable no-new-func */
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-continue */
@@ -12,6 +13,7 @@ import Dom from "./dom";
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
 const re = /<([A-Z][A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/;
+const ternaryOperatorRe = /\{\{\s*(.*?)\?(?!\.)(.*?)\s*:\s*(.*?)\s*\}\}/g;
 
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|context:(\d+))|(\w+)/g;
 const components = new Map();
@@ -122,12 +124,15 @@ export default class Component {
   _compile(template) {
     if (!template) console.error(this.constructor.name, " отсутствует шаблон");
 
+    template = template.replace(ternaryOperatorRe, (match, condition, value1, value2) =>
+      new Function(`return ${condition}`).call(this.state) ? value1 : value2
+    );
+
     return template.replace(/\{\{([A-Za-z0-9._-]+)\}\}/g, (match, key) => {
       const value = getValue(key, this.state);
 
       if (value === undefined) return "";
       if (isPrimitive(value)) return value;
-      // children = str
       return `context:${setContext(value)}`;
     });
   }

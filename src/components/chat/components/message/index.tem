@@ -1,6 +1,6 @@
 <div class="chat__message message" {{dayStart}}>
-  <div class="message__content-wrapper">
-    {{ true? <image class="message__image" {{pathDefenision}} /> : "" }}
+  <div class="message__content-wrapper {{hasFile}}">
+    {{ this.hasFile ? <image class="message__image" src="{{file.path}}" /> : null }}
     <p class="message__content">{{content}}</p>
   </div>
     <MessageTime time="{{date}}""/>

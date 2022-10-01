@@ -7,7 +7,7 @@
   text-align: center;
 
   &::placeholder {
-    background: url(/static/images/magnifying-glass-solid.svg) no-repeat;
+    background: url(/static/public/images/magnifying-glass-solid.svg) no-repeat;
     background-position: 35%;
   }
 

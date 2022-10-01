@@ -17,7 +17,7 @@
     "file": {
       "id": 132,
       "user_id": 126,
-      "path": "/public/images/cat 1.jpg",
+      "path": "/images/cat 1.jpg",
       "filename": "my-file.jpg",
       "content_type": "image/jpeg",
       "content_size": 543672,
@@ -34,8 +34,8 @@
     "file": {
       "id": 132,
       "user_id": 126,
-      "path": "/32543654dsf/434534r3rsddfs_my-file.jpg",
-      "filename": "my-file.jpg",
+      "path": "/images/kamera.jpg",
+      "filename": "camera.jpg",
       "content_type": "image/jpeg",
       "content_size": 543672,
       "upload_date": "2020-01-02T14:22:22.000Z"
@@ -52,22 +52,23 @@
   {
     "id": 4,
     "user_id": 99,
-    "chat_id": 125,
+    "chat_id": 2,
     "date": "2022-09-18 04:43:39",
     "type": "message",
     "content": "С другой стороны, высокое качество позиционных исследований напрямую зависит от своевременного выполнения сверхзадачи."
   },
   {
     "id": 5,
-    "user_id": 66,
-    "chat_id": 12,
+    "user_id": 1,
+    "chat_id": 5,
     "date": "2022-08-19 01:26:29",
     "content": "Посмотри",
     "type": "file",
     "file": {
       "id": 132,
       "user_id": 125,
-      "path": "/32543654dsf/434534r3rsddfs_my-file.jpg",
+
+      "path": "/images/cat_3.jpg",
       "filename": "my-file.jpg",
       "content_type": "image/jpeg",
       "content_size": 543672,
@@ -76,31 +77,31 @@
   },
   {
     "id": 6,
-    "user_id": 68,
-    "chat_id": 82,
+    "user_id": 128,
+    "chat_id": 5,
     "date": "2022-09-09 17:34:32",
     "type": "message",
     "content": "Мы вынуждены отталкиваться от того, что постоянное информационно-пропагандистское обеспечение нашей деятельности является качественно новой ступенью экономической целесообразности принимаемых решений!"
   },
   {
     "id": 7,
-    "user_id": 49,
-    "chat_id": 95,
+    "user_id": 1,
+    "chat_id": 7,
     "date": "2022-08-03 02:06:50",
     "type": "message",
     "content": "Это наиболее частый паттерн слияния. В данном случае в ветке master создается новый коммит (M), который будет ссылаться на двух родителей: коммит D и коммит Y; а указатель master установится на коммит (M)."
   },
   {
     "id": 8,
-    "user_id": 83,
-    "chat_id": 88,
+    "user_id": 128,
+    "chat_id": 6,
     "date": "2022-08-16 07:11:31",
     "content": "",
     "type": "file",
     "file": {
       "id": 132,
       "user_id": 125,
-      "path": "/32543654dsf/434534r3rsddfs_my-file.jpg",
+      "path": "/images/cat_4.jpg",
       "filename": "my-file.jpg",
       "content_type": "image/jpeg",
       "content_size": 543672,
@@ -109,15 +110,15 @@
   },
   {
     "id": 9,
-    "user_id": 56,
-    "chat_id": 76,
+    "user_id": 1,
+    "chat_id": 7,
     "date": "2022-08-20 15:48:37",
     "content": "",
     "type": "file",
     "file": {
       "id": 132,
       "user_id": 125,
-      "path": "/32543654dsf/434534r3rsddfs_my-file.jpg",
+      "path": "/mages/cat_5.jpg",
       "filename": "my-file.jpg",
       "content_type": "image/jpeg",
       "content_size": 543672,
@@ -126,16 +127,16 @@
   },
   {
     "id": 10,
-    "user_id": 68,
-    "chat_id": 82,
+    "user_id": 127,
+    "chat_id": 8,
     "date": "2022-09-09 17:34:32",
     "type": "message",
     "content": "Мы вынуждены отталкиваться от того, что постоянное информационно-пропагандистское обеспечение нашей деятельности является качественно новой ступенью экономической целесообразности принимаемых решений!"
   },
   {
     "id": 11,
-    "user_id": 49,
-    "chat_id": 95,
+    "user_id": 127,
+    "chat_id": 8,
     "date": "2022-08-03 02:06:50",
     "type": "message",
     "content": "Как уже неоднократно упомянуто, предприниматели в сети интернет могут быть функционально разнесены на независимые элементы."
@@ -150,8 +151,8 @@
   },
   {
     "id": 13,
-    "user_id": 49,
-    "chat_id": 95,
+    "user_id": 128,
+    "chat_id": 5,
     "date": "2022-08-03 02:06:50",
     "type": "message",
     "content": "Попробуем же разобраться в тонкостях git-merge и приручить эту великую магию."

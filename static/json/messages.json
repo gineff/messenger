@@ -17,7 +17,7 @@
     "file": {
       "id": 132,
       "user_id": 126,
-      "path": "/static/images/cat 1.jpg",
+      "path": "/public/images/cat 1.jpg",
       "filename": "my-file.jpg",
       "content_type": "image/jpeg",
       "content_size": 543672,

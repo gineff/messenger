@@ -20,6 +20,11 @@
     line-height: 15px;
     white-space: pre-wrap;
   }
+
+  &__image {
+    max-width: 382px;
+    border-radius: 8px;
+  }
 }
 
 .message[first-message]:before {

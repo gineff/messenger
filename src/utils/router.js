@@ -20,6 +20,7 @@ function render(Comp) {
 
 export default function route() {
   const path = document.location.pathname.slice(1);
-  if (path.slice(0, 7) === "static/") return;
+  //console.log(path, path.slice(0, 7), path.slice(0, 7) === "public/");
+  //if (path.slice(0, 7) === "public/") return;
   render(routes[path] ?? routes[404]);
 }

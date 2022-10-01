@@ -1,4 +1,3 @@
 <div class="chat__list">
-  <span>{{list}}</span>
-  <span>{{id}}</span>
+  {{list}}
 </div>

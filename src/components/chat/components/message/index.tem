@@ -1,5 +1,6 @@
-<div class="chat__message message" date="{{date}}">
+<div class="chat__message message" {{dayStart}}>
   <div class="message__content-wrapper">
+    <image class="message__image" {{pathDefenision}} />
     <p class="message__content">{{content}}</p>
   </div>
     <MessageTime time="{{date}}""/>

@@ -9,8 +9,20 @@ export default class Message extends Component {
   }
 
   render() {
-    const { content } = this.state;
-    this.state = { ...this.state, content: content.replace(/\n/g, "<br>") };
+    const {
+      content,
+      dayStart,
+      file: { path },
+    } = this.state;
+
+    const pathDefenision = path ? `src="${path}"` : "";
+
+    this.state = {
+      ...this.state,
+      dayStart: dayStart ? `first-message="${dayStart}"` : "",
+      content: content.replace(/\n/g, "<br>"),
+      pathDefenision,
+    };
     return super.render();
   }
 }

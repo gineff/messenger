@@ -8,6 +8,10 @@
     "build": "parcel build ./static/index.html --no-optimize",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "staticFiles": {
+    "staticPath": "static/images",
+    "watcherGlob": "**"
+  },
   "author": "gineff",
   "license": "ISC",
   "devDependencies": {
@@ -21,6 +25,7 @@
     "eslint-config-prettier": "^8.5.0",
     "events": "^3.3.0",
     "parcel": "^2.7.0",
+    "parcel-plugin-static-files-copy": "^2.6.0",
     "path-browserify": "^1.0.1",
     "postcss": "^8.4.16",
     "postcss-nested": "^5.0.6",

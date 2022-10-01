@@ -12,8 +12,8 @@ const sortByDate = (messages) => messages.sort((cur, prev) => new Date(cur.date)
 
 const markFirstMessageOfTheDay = (messages) =>
   messages?.map((item, index, array) =>
-    new Date(item.date).getDate() !== new Date(array[index + 1]).getDate(item.date)
-      ? { ...item, date: getFormatedDate(new Date()) }
+    new Date(item.date).getDate() !== new Date(array[index - 1]?.date).getDate(item.date)
+      ? { ...item, dayStart: getFormatedDate(new Date(item.date)) }
       : item
   );
 
@@ -39,7 +39,6 @@ export default class Messages extends Component {
     const { messages } = this.state;
     const list = messages ? messages.map((mes) => new Message(mes)) : "";
     this.state = { ...this.state, list };
-    console.log(this.state);
 
     return super.render();
   }

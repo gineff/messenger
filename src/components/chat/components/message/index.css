@@ -1,16 +1,12 @@
-.chat__message {
-  width: 100%;
-  border-radius: 8px;
-  color: #f8f8f8;
-}
-
 .message {
-  &__content-wrapper {
-    width: 402px;
+  width: 402px;
+  margin-bottom: 10px;
+
+  &__container {
     background-color: #f8f8f8;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 10px;
+    border-radius: 12px;
+    max-width: 402px;
+    overflow: hidden;
   }
 
   &__content {
@@ -18,12 +14,18 @@
     font-weight: 500;
     font-size: 12px;
     line-height: 15px;
-    white-space: pre-wrap;
+    padding: 8px;
   }
 
   &__image {
-    max-width: 382px;
-    border-radius: 8px;
+    width: 100%;
+  }
+
+  &__time {
+    position: relative;
+    width: 70px;
+    bottom: 30px;
+    text-align: center;
   }
 }
 

@@ -39,7 +39,7 @@ function getValue(path, obj) {
     }
     return result;
   } catch (e) {
-    return "";
+    return undefined;
   }
 }
 
@@ -124,15 +124,22 @@ export default class Component {
   _compile(template) {
     if (!template) console.error(this.constructor.name, " отсутствует шаблон");
 
-    template = template.replace(ternaryOperatorRe, (match, condition, value1, value2) =>
-      new Function(`return ${condition}`).call(this.state) ? value1 : value2
-    );
+    template = template.replace(ternaryOperatorRe, (match, condition, value1, value2) => {
+      const result = new Function(`return ${condition}`).call(this.state) ? value1 : value2;
+      // eslint-disable-next-line quotes
+      return result.replace(/null|undefined/g, "");
+    });
 
     return template.replace(/\{\{([A-Za-z0-9._-]+)\}\}/g, (match, key) => {
       const value = getValue(key, this.state);
 
-      if (value === undefined) return "";
-      if (isPrimitive(value)) return value;
+      // eslint-disable-next-line eqeqeq
+      if (value == undefined || value == null) {
+        return "";
+      }
+      if (isPrimitive(value)) {
+        return value;
+      }
       return `context:${setContext(value)}`;
     });
   }
@@ -149,6 +156,7 @@ export default class Component {
     const block = this._compile(this.template).replace(/\n|\s{2}/g, "");
     this.block = block;
 
+    // ToDo Ошибка если мужду Тегом и именем аттрибута более одного пробела. Пробел схлоывается <Message  name= -> <Mesaagename
     const [htmlTree, nestedComponents] = parseNestedComponents(block);
 
     const dom = new Dom(htmlTree);

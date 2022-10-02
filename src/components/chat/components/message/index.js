@@ -1,5 +1,5 @@
 import Component from "../../../../utils/component";
-import MessageTime from "../../../date";
+import MessageTime, { getFormatedDate } from "../../../date";
 import template from "./index.tem";
 import "./index.css";
 
@@ -9,15 +9,9 @@ export default class Message extends Component {
   }
 
   render() {
-    const { content, dayStart, file } = this.state;
-
+    const { content } = this.state;
+    this.state = { ...this.state, content: content.replace(/\n/g, "<br>") };
     console.log(this);
-    this.state = {
-      ...this.state,
-      hasFile: Boolean(file),
-      dayStart: dayStart ? `first-message="${dayStart}"` : "",
-      content: content.replace(/\n/g, "<br>"),
-    };
     return super.render();
   }
 }

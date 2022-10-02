@@ -9,9 +9,11 @@ export default class Message extends Component {
   }
 
   render() {
-    const { content } = this.state;
-    this.state = { ...this.state, content: content.replace(/\n/g, "<br>") };
-    console.log(this);
+    const { content, file } = this.state;
+    this.state = { ...this.state, 
+      content: content.replace(/\n/g, "<br>"),
+      hasMedia: file? "hasMedia" : null 
+    };
     return super.render();
   }
 }

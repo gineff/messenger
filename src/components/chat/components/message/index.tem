@@ -1,7 +1,7 @@
-<div class="chat__message message message_{{type}}" {{dayStart}}>
+<div class="chat__message message" {{hasMedia}} date = {{date}}>
   <div class="message__container">
     {{ this?.file ? <image class="message__image" src="{{file.path}}" /> : null }}
     {{ this?.content? <p class="message__content">{{content}}</p> : null}}
   </div>
-  <div className = "message__time"><MessageTime time="{{${new Date}}}"/></div>
+  <div class = "message__time"><MessageTime time="{{date}}"/></div>
 </div>

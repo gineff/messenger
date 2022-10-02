@@ -13,7 +13,7 @@ import Dom from "./dom";
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
 const re = /<([A-Z][A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/;
-const ternaryOperatorRe = /\{\{\s*(.*?)\?(?!\.)(.*?)\s*:\s*(.*?)\s*\}\}/g;
+const ternaryOperatorRe = /\{\{\s*([^}]*)\?(?!\.)(.*?)\s*:\s*(.*?)\s*\}\}/g;
 
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|context:(\d+))|(\w+)/g;
 const components = new Map();

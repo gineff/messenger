@@ -12,7 +12,8 @@ import Dom from "./dom";
 
 //              1           2                3         4                5
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
-const re = /<([A-Z][A-Za-z0-9._]+)([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]+)([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/;
+const re =
+  /<([A-Z][A-Za-z0-9._]+)\s*([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]+)\s*([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/;
 const ternaryOperatorRe = /\{\{\s*([^}]*)\?(?!\.)(.*?)\s*:\s*(.*?)\s*\}\}/g;
 
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|context:(\d+))|(\w+)/g;
@@ -135,7 +136,7 @@ export default class Component {
 
       // eslint-disable-next-line eqeqeq
       if (value == undefined || value == null) {
-        return "";
+        return " ";
       }
       if (isPrimitive(value)) {
         return value;

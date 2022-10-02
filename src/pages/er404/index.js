@@ -3,6 +3,7 @@
 import template from "./index.tem";
 import Component from "../../utils/component";
 import Wrapper from "../../components/wrapper";
+import "./index.css";
 
 export default class Er404 extends Component {
   constructor(props) {

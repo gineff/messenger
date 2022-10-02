@@ -1,0 +1,31 @@
+temlate
+<div class="chat__message message" {{hasMedia}} {{hasContent}} date="{{this.firstOfTheDay ? {{date}} : null}}">
+	<div class="message__container">
+		<div class="message__time">
+			<MessageTime time="{{date}}" /> 
+    </div> 
+    {{ this?.content? <p class="message__content">{{content}}</p> : null}}
+    {{ this?.file ? <image class="message__image" src="{{file.path}}" /> : null }} </div>
+</div>
+
+block
+<div class=\"chat__message message\" hasMediadate=\ " 2022-08-16 07:11:31\">
+	<div class=\"message__container\">
+		<div class=\"message__time\">
+			<MessageTime time=\ "2022-08-16 07:11:31\"/>
+		</div>
+		<image class=\"message__image\" src=\"/images/cat_4.jpg\" />
+	</div>
+</div>
+
+<div class="chat__message message" hasmediadate=" 2022-08-16 07:11:31">
+	<div class="message__container">
+		<div class="message__time">
+			<div class="date ">16 Авг 2022</div>
+		</div> <img class="message__image" src="/images/cat_4.jpg"></div>
+</div>
+
+
+{{hasContent}} date=   -     date=
+
+{{hasContent}}\s  -> взял вместе с пробелом вернул ""

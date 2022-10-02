@@ -3,16 +3,19 @@
   display: flex;
 
   &__container {
-    display: flex;
-    flex-direction: column;
     background-color: #f8f8f8;
     border-radius: 12px;
-    max-width: 402px;
+    width: 402px;
     overflow: hidden;
   }
 
-  &[hasContent] &__container {
-    flex-direction: column-reverse;
+  &[hasmedia] &__container {
+    max-width: 402px;
+  }
+
+  &:not([hasContent])&__container {
+    display: flex;
+    flex-direction: column;
   }
 
   &__content {
@@ -21,20 +24,41 @@
     font-size: 12px;
     line-height: 15px;
     padding: 8px;
+    position: relative;
   }
 
   &__image {
-    width: 100%;
+    max-width: 100%;
+  }
+
+  &:not([hasContent]) &__time {
+    margin: auto;
+    margin-right: 0;
+    position: relative;
+    bottom: 20px;
+    width: 70px;
+    text-align: center;
+
+    & .date {
+      padding: 0;
+      margin-right: 8px;
+      margin-bottom: 4px;
+      background-color: #989898;
+      border-radius: 5px;
+      padding: 2px;
+      color: white;
+    }
   }
 
   &[hasContent] &__time {
+    display: flex;
+    padding-bottom: 8px;
+    padding-right: 8px;
     float: right;
     height: 100%;
-    margin-left: 15px;
-    display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    shape-outside: radial-gradient(circle 150px at bottom right, #fff 98%, transparent);
+    shape-outside: inset(calc(100% - 22px) 25% 25%);
   }
 
   [first-message]:before {

@@ -17,12 +17,6 @@ let id = 1;
 // eslint-disable-next-line no-plusplus
 const nextId = () => id++;
 
-const wrapFunction = (f) => {
-  const id = uid();
-  const functionAlias = `functionId${id}`;
-  window[functionAlias] = f;
-  return `${functionAlias}(this)`;
-};
 
 const stringifyProps = (props, keys = false) =>
   Object.entries(props)
@@ -55,4 +49,4 @@ const emit = (key, payload) => {
 
 const useEventBus = [on, emit];
 
-export { wrapFunction, uid, nextId, goToElementHref, stringifyProps, getContext, setContext, useEventBus };
+export { uid, nextId, goToElementHref, stringifyProps, getContext, setContext, useEventBus };

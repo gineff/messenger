@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Component from "../../../../utils/component";
 import fetchData from "../../../../utils/fetchData";
 import { useEventBus } from "../../../../utils";
@@ -9,27 +10,27 @@ import "./index.css";
 
 const sortByDate = (messages) => messages.sort((cur, prev) => new Date(cur.date) - new Date(prev.date));
 
-const markFirstMessageOfTheDay = (messages) =>
-  messages?.map((item, index, array) =>
-    new Date(item.date).getDate() !== new Date(array[index - 1]?.date).getDate(item.date)
-      ? { ...item, firstOfTheDay: true }
-      : item
-  );
+const markFirstMessageOfTheDayNThisUser = (messages, thisUserProp) =>
+  messages?.map((item, index, array) => {
+    const { date, user_id } = item;
+    const firstOfTheDay = new Date(date).getDate() !== new Date(array[index - 1]?.date).getDate(date);
+    const thisUser = user_id === thisUserProp.user_id;
+    return { ...item, firstOfTheDay, thisUser };
+  });
 
 const [on] = useEventBus;
 export default class Messages extends Component {
   constructor(props) {
     super({ ...props, template, Message });
 
-    // const user = useContext(User);
-    // console.log(user);
+    const thisUser = useContext(User);
 
     on("ChatItemSelected", async (chat) => {
       const { id } = chat;
       const data = await fetchData(`/chats/${id}`, { method: "GET" });
-      const messages = markFirstMessageOfTheDay(sortByDate(data)) || [];
+      const messages = markFirstMessageOfTheDayNThisUser(sortByDate(data, thisUser), thisUser) || [];
 
-      this.state = { ...this.state, messages, preloaderIsHidden: "hidden" };
+      this.state = { ...this.state, messages, preloaderIsHidden: "hidden", thisUser };
       this.render();
     });
   }

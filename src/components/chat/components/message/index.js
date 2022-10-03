@@ -1,5 +1,5 @@
 import Component from "../../../../utils/component";
-import MessageTime, { getFormatedDate } from "../../../date";
+import MessageTime from "../../../date";
 import template from "./index.tem";
 import "./index.css";
 
@@ -11,11 +11,11 @@ export default class Message extends Component {
   render() {
     console.log(this);
     const { content, file } = this.state;
-    this.state = { 
-      ...this.state, 
-      content: content.replace(/\n/g, "<br>"), 
+    this.state = {
+      ...this.state,
+      content: content.replace(/\n/g, "<br>"),
       hasMedia: file ? "hasMedia" : null,
-      hasContent: content? "hasContent" : null
+      hasContent: content ? "hasContent" : null,
     };
     return super.render();
   }

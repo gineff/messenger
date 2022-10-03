@@ -2,21 +2,45 @@
   margin-bottom: 10px;
   display: flex;
 
+  &[thisUser] {
+    justify-content: flex-end;
+  }
+
+  &[date1]:before {
+    content: attr(date);
+    color: #000;
+    font-size: 12px;
+    line-height: 12px;
+    text-align: center;
+    color: #999;
+    display: block;
+    width: 100px;
+    margin: 20 auto;
+  }
+
+  /*  conteiner  */
+
   &__container {
     background-color: #f8f8f8;
     border-radius: 12px;
     width: 402px;
     overflow: hidden;
+    @nest .message[thisUser] & {
+      background-color: #e4edfd;
+    }
   }
 
   &[hasmedia] &__container {
     max-width: 402px;
+    position: relative;
   }
 
   &:not([hasContent])&__container {
     display: flex;
     flex-direction: column;
   }
+
+  /* text */
 
   &__content {
     color: #1e1e1e;
@@ -27,11 +51,21 @@
     position: relative;
   }
 
+  /* image */
+
   &__image {
-    max-width: 100%;
+    max-width: 402px;
   }
 
-  &:not([hasContent]) &__time {
+  /* time floating */
+
+  &__time:before {
+    @nest .message[thisUser] & {
+      content: "\2713";
+    }
+  }
+
+  &[hasMedia] &__time {
     margin: auto;
     margin-right: 0;
     position: relative;
@@ -50,7 +84,7 @@
     }
   }
 
-  &[hasContent] &__time {
+  &:not([hasMedia]) &__time {
     display: flex;
     padding-bottom: 8px;
     padding-right: 8px;
@@ -59,17 +93,5 @@
     flex-direction: column;
     justify-content: flex-end;
     shape-outside: inset(calc(100% - 22px) 25% 25%);
-  }
-
-  [first-message]:before {
-    content: attr(first-message);
-    color: #000;
-    font-size: 12px;
-    line-height: 12px;
-    text-align: center;
-    color: #999;
-    display: block;
-    width: 100px;
-    margin: 20 auto;
   }
 }

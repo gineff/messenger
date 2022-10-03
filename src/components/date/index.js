@@ -20,7 +20,7 @@ export default class DateComponent extends Component {
   }
 
   render() {
-    const { time } = this.state;
+    const { time, format } = this.state;
 
     const date = new Date(time);
 
@@ -28,10 +28,14 @@ export default class DateComponent extends Component {
     const isThisWeek = (today - date) / (1000 * 60 * 60 * 24) < 7 && today.getDay() > (date.getDay() || 7);
 
     const formattedTime = (() => {
+      if (format === "hh:mm") {
+        return time.substr(11, 5);
+      }
+
       if (isToday) return time.slice(11, 16);
       if (isThisWeek) return getWeekDay(date);
       return getFormatedDate(date);
-    })();
+    })(format);
 
     this.state = { ...this.state, formattedTime };
     return super.render();

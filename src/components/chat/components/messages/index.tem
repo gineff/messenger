@@ -2,5 +2,5 @@
   <div class="chat__messages-preloader {{preloaderIsHidden}}">
     Выберите чат чтобы отправить сообщение
   </div>
-  <div class="chat__messages messages">{{list}}</div>
+  <div class="chat__messages-list messages">{{list}}</div>
 </div>

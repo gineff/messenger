@@ -9,7 +9,7 @@ export default class Message extends Component {
   }
 
   render() {
-    console.log(this);
+    // console.log(this);
     const { content, file } = this.state;
     this.state = {
       ...this.state,

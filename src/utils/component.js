@@ -14,7 +14,7 @@ import Dom from "./dom";
 // re =      <(Tag) (props=" props" )/> | <(Tag) (props = "props" )>(children)</Tag>
 const re =
   /<([A-Z][A-Za-z0-9._]+)\s*([^>]*)\/>|<(?<tag>[A-Z][A-Za-z0-9._]+)\s*([^>]*)>(.*?)<\/\k<tag>\s?>|context:(\d+)/;
-const ternaryOperatorRe = /\{\{\s*([^}]*)\?(?!\.)(.*?)\s*:\s*(.*?)\s*\}\}/g;
+const ternaryOperatorRe = /\{\{\s*([^}]*)\?(?!\.)\s*(.*?)\s*:\s*(.*?)\s*\}\}/g;
 
 const propsRegexp = /(\w+)\s*=\s*((?<quote>["'`])(.*?)\k<quote>|context:(\d+))|(\w+)/g;
 const components = new Map();
@@ -128,6 +128,10 @@ export default class Component {
     template = template.replace(ternaryOperatorRe, (match, condition, value1, value2) => {
       const result = new Function(`return ${condition}`).call(this.state) ? value1 : value2;
       // eslint-disable-next-line quotes
+      console.log(
+        match,
+        `-value1-${value1}-value2-${value2}-result-${result}-stripped-${result.replace(/null|undefined/g)}-`
+      );
       return result.replace(/null|undefined/g, "");
     });
 

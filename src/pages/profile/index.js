@@ -51,16 +51,19 @@ export default class Profile extends Component {
 
     const ninjaData = [
       {
-        variant: "primary",
-        href: "/chat",
-        className: "login-form__apply-button",
-        title: "Авторизоваться",
+        variant: "link",
+        className: "profile__change-data-button",
+        title: "Изменить данные",
       },
       {
         variant: "link",
-        href: "/register",
-        className: "login-form__alternative-button",
-        title: "Нет аккаунта?",
+        className: "login-form__change-password-button",
+        title: "Изменить пароль",
+      },
+      {
+        variant: "link",
+        className: "login-form__logout-button",
+        title: "Выйти",
       },
     ];
 

@@ -8,7 +8,6 @@ export default class Button extends Component {
   }
 
   render() {
-    console.log(this);
     const { title, children } = this.state;
     this.state.title = title || children;
     return super.render();

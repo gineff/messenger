@@ -19,28 +19,37 @@ const markFirstMessageOfTheDayNThisUser = (messages, thisUserProp) =>
   });
 
 const [on] = useEventBus;
+const thisUser = useContext(User);
 export default class Messages extends Component {
   constructor(props) {
     super({ ...props, template, Message });
-
-    const thisUser = useContext(User);
 
     on("ChatItemSelected", async (chat) => {
       const { id } = chat;
       const data = await fetchData(`/chats/${id}`, { method: "GET" });
       const messages = markFirstMessageOfTheDayNThisUser(sortByDate(data, thisUser), thisUser) || [];
 
-      this.state = { ...this.state, messages, preloaderIsHidden: "hidden", thisUser };
+      this.state = { ...this.state, chat, messages, preloaderIsHidden: "hidden", thisUser };
       this.render();
     });
 
-    on("NewMessageAdded", async (message) => {
-      const { messages } = this.state;
+    on("newMessageAdded", async (messageStr) => {
+      const {
+        messages,
+        chat: { chat_id },
+      } = this.state;
+      console.log("messageStr", messageStr);
+      const message = {
+        user_id: thisUser.user_id,
+        chat_id,
+        thisUser: true,
+        content: messageStr.trim(),
+        date: new Date().toISOString(),
+      };
       messages.push(message);
-      this.state = { ...this.state, messages};
+      this.state = { ...this.state, messages };
       this.render();
     });
-
   }
 
   render() {

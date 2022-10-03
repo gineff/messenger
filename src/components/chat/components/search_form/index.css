@@ -1,6 +1,6 @@
 .chat__search-form-control {
-  background-color: #efefef;
-  color: #999;
+  background-color: var(--secondary-color);
+  color: var(--grey-color);
   border-radius: 8px;
   height: 34px;
   font-size: 12px;

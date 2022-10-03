@@ -1,6 +1,6 @@
 .form__group {
   width: 100%;
-  border-bottom: 1px solid #3369f3;
+  border-bottom: 1px solid var(--main-color);
   margin-bottom: 16px;
 
   &:after {

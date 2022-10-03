@@ -4,8 +4,7 @@
   margin: 8px 0;
   border: 0;
   width: 100%;
-  color: #000;
-
+  color: var(--black-color);
 
   &:focus::placeholder {
     color: transparent;

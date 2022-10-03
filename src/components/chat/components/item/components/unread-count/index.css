@@ -5,14 +5,14 @@
     border-radius: 50%;
     font-size: 11px;
     line-height: 12px;
-    background-color: #3369f3;
-    color: #fff;
+    background-color: var(--main-color);
+    color: var(--white-color);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     margin-left: auto;
-    &.hidden{
+    &.hidden {
       display: none;
     }
   }

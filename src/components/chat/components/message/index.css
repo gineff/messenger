@@ -12,11 +12,11 @@
 
   &[date1]:before {
     content: attr(date);
-    color: #000;
+    color: var(--black-color);
     font-size: 12px;
     line-height: 12px;
     text-align: center;
-    color: #999;
+    color: var(--grey-color);
     width: 100px;
     margin: 20 auto;
     position: absolute;
@@ -25,12 +25,12 @@
   /*  conteiner  */
 
   &__container {
-    background-color: #f8f8f8;
+    background-color: var(--second-background-color);
     border-radius: 12px;
     width: 402px;
     overflow: hidden;
     @nest .message[thisUser] & {
-      background-color: #e4edfd;
+      background-color: var(--background-color);
     }
   }
 
@@ -47,7 +47,7 @@
   /* text */
 
   &__content {
-    color: #1e1e1e;
+    color: var(--text-color);
     font-weight: 500;
     font-size: 12px;
     line-height: 15px;
@@ -81,7 +81,7 @@
       padding: 0;
       margin-right: 8px;
       margin-bottom: 4px;
-      background-color: #989898;
+      background-color: var(--grey-color);
       border-radius: 5px;
       padding: 2px;
       color: white;

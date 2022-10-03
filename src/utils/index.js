@@ -17,13 +17,13 @@ let id = 1;
 // eslint-disable-next-line no-plusplus
 const nextId = () => id++;
 
-
 const stringifyProps = (props, keys = false) =>
   Object.entries(props)
     .reduce((prev, [key, value]) => {
       if ((keys && !keys.include(key)) || value === undefined) {
         return prev;
       }
+      if (typeof value === "function") return prev;
       return `${prev} ${key}="${value}"`;
     }, "")
     .trim();

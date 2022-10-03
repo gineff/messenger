@@ -24,3 +24,7 @@
   background-color: #3369f3;
   color: #fff;
 }
+
+.button_transparent {
+  background-color: transparent;
+}

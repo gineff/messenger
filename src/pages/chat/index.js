@@ -3,7 +3,7 @@ import { goToElementHref, useEventBus } from "../../utils";
 import Wrapper from "../../components/wrapper";
 import Sidebar, { Header, Body } from "../../components/sidebar";
 import Main from "../../components/main";
-import { SearchForm, List, Messages, Header as ChatHeader, MessagePanel } from "../../components/chat";
+import { SearchForm, List, Messages, Header as ChatHeader, Footer } from "../../components/chat";
 import { ProfileLink } from "../../components/user";
 import chats from "../../../static/json/chats.json";
 import template from "./index.tem";
@@ -30,7 +30,7 @@ export default class ChatPage extends Component {
       "Chat.List": List,
       "Chat.Header": ChatHeader,
       "Chat.Messages": Messages,
-      "Chat.MessagePanel": MessagePanel,
+      "Chat.Footer": Footer,
     });
   }
 

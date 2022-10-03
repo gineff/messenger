@@ -11,6 +11,6 @@
   <Main>
     <Chat.Header />
     <Chat.Messages />
-    <Chat.MessagePanel />
+    <Chat.Footer />
   </Main>
 </Wrapper>

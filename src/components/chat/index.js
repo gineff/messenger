@@ -2,11 +2,11 @@ import Component from "../../utils/component";
 import Messages from "./components/messages";
 import List from "./components/list";
 import SearchForm from "./components/search_form";
-import MessagePanel from "./components/message-panel";
+import Footer from "./components/footer";
 import Header from "./components/header";
 import "./index.css";
 
-export { Messages, List, Header, SearchForm, MessagePanel };
+export { Messages, List, Header, SearchForm, Footer };
 
 export default class Chat extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ export default class Chat extends Component {
       List,
       Header,
       SearchForm,
-      MessagePanel,
+      Footer,
       template: "<div class='chat'>{{children}}</div>",
     });
   }

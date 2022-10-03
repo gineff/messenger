@@ -2,11 +2,13 @@ import Login from "../pages/login";
 import Register from "../pages/register";
 import Er404 from "../pages/er404";
 import Chat from "../pages/chat";
+import Profile from "../pages/profile";
 
 const routes = {
   login: Login,
   register: Register,
   chat: Chat,
+  profile: Profile,
   404: Er404,
 };
 
@@ -20,7 +22,5 @@ function render(Comp) {
 
 export default function route() {
   const path = document.location.pathname.slice(1);
-  //console.log(path, path.slice(0, 7), path.slice(0, 7) === "public/");
-  //if (path.slice(0, 7) === "public/") return;
   render(routes[path] ?? routes[404]);
 }

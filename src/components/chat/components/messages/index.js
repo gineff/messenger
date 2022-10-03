@@ -33,6 +33,14 @@ export default class Messages extends Component {
       this.state = { ...this.state, messages, preloaderIsHidden: "hidden", thisUser };
       this.render();
     });
+
+    on("NewMessageAdded", async (message) => {
+      const { messages } = this.state;
+      messages.push(message);
+      this.state = { ...this.state, messages};
+      this.render();
+    });
+
   }
 
   render() {

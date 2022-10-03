@@ -22,6 +22,7 @@ const components = new Map();
 const eventMap = {
   onClick: "click",
   onBlur: "blur",
+  onChange: "change",
 };
 
 function getValue(path, obj) {
@@ -128,10 +129,6 @@ export default class Component {
     template = template.replace(ternaryOperatorRe, (match, condition, value1, value2) => {
       const result = new Function(`return ${condition}`).call(this.state) ? value1 : value2;
       // eslint-disable-next-line quotes
-      console.log(
-        match,
-        `-value1-${value1}-value2-${value2}-result-${result}-stripped-${result.replace(/null|undefined/g)}-`
-      );
       return result.replace(/null|undefined/g, "");
     });
 
@@ -191,11 +188,14 @@ export default class Component {
   addEventHandler(element, props) {
     Object.entries(props).forEach(([key, handler]) => {
       if (typeof handler !== "function") return;
-
+      element.addEventListener(key.substring(2).toLowerCase(), handler, { capture: true });
+      /*
       const eventName = eventMap[key];
       if (eventName) {
         element.addEventListener(eventName, handler, { capture: true });
       }
+
+      */
     });
   }
 }

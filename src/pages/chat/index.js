@@ -1,6 +1,7 @@
 import Component from "../../utils/component";
 import { goToElementHref, useEventBus } from "../../utils";
 import Wrapper from "../../components/wrapper";
+import Button from "../../components/button";
 import Sidebar, { Header, Body } from "../../components/sidebar";
 import Main from "../../components/main";
 import { SearchForm, List, Messages, Header as ChatHeader, Footer } from "../../components/chat";
@@ -23,6 +24,7 @@ export default class ChatPage extends Component {
       Wrapper,
       Sidebar,
       Main,
+      Button,
       "Sidebar.Header": Header,
       "Sidebar.Body": Body,
       "User.ProfileLink": ProfileLink,
@@ -35,13 +37,12 @@ export default class ChatPage extends Component {
   }
 
   render() {
-    
     const ChatItemSelected = (event) => {
       const { target } = event;
       const chatItemSelected = target.closest(".chat-item");
       const id = +chatItemSelected.getAttribute("chat-id");
       const chat = chats.find((el) => el.id === id);
-      
+
       emit("ChatItemSelected", chat);
     };
 

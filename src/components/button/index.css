@@ -25,6 +25,13 @@
   color: var(--white-color);
 }
 
+.button_icon {
+  height: 24px;
+  width: 24px;
+  padding: 0 4px;
+  margin: 0 8px;
+}
+
 .button_transparent {
   background-color: transparent;
 }

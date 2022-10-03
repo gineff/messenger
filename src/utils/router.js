@@ -1,5 +1,7 @@
+import Home from "../pages/home";
 import Login from "../pages/login";
 import Register from "../pages/register";
+import Er500 from "../pages/er500";
 import Er404 from "../pages/er404";
 import Chat from "../pages/chat";
 import Profile from "../pages/profile";
@@ -10,6 +12,8 @@ const routes = {
   chat: Chat,
   profile: Profile,
   404: Er404,
+  500: Er500,
+  home: Home,
 };
 
 function render(Comp) {
@@ -21,6 +25,10 @@ function render(Comp) {
 }
 
 export default function route() {
-  const path = document.location.pathname.slice(1);
-  render(routes[path] ?? routes[404]);
+  if (document.location.pathname === "/") {
+    render(routes.home);
+  } else {
+    const path = document.location.pathname.slice(1);
+    render(routes[path] ?? routes[404]);
+  }
 }

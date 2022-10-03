@@ -1,5 +1,4 @@
 const goToElementHref = (event) => {
-  console.log(event.target);
   const href = event.target.getAttributeNode("href").value;
   if (href !== undefined) window.location = href;
 };

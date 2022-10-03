@@ -7,6 +7,10 @@
   border-top: 1px solid var(--border-color);
 }
 
+.chat__avatar {
+
+}
+
 .chat-item {
   cursor: pointer;
 

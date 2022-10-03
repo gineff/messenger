@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import Component from "../../../../utils/component";
 import { useEventBus } from "../../../../utils";
-import Avatar from "../avatar";
+import Avatar from "../../../avatar";
 import Button from "../../../button";
 import template from "./index.tem";
 import "./index.css";

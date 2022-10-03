@@ -1,23 +1,8 @@
-.test__container {
-  width: 360px;
-  background-color: azure;
-  border: 1px solid lightcyan;
-  text-align: justify;
-  font-size: 20px;
-  margin: 0;
+.error404__content {
+  text-align: center;
 }
 
-.float {
-  float: right;
-  height: 100%;
-  margin-left: 15px;
-  display: flex;
-  align-items: flex-end;
-  shape-outside: inset(calc(100% - 50px) 5px 50px);
-}
-
-.box {
-  width: 50px;
-  height: 25px;
-  background-color: rgb(214, 48, 19);
+.error404__content h1 {
+  font-size: 48px;
+  padding-bottom: 20px;
 }
